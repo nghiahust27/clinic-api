@@ -2,13 +2,92 @@
 
 namespace App\Services;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
+
 class UserService
 {
-    /**
-     * Create a new class instance.
-     */
-    public function __construct()
+    private function ensureNotLastActiveAdmin(): void
     {
-        //
+        $activeAdminCount = User::where('is_active', true)
+            ->whereHas('role', function ($query) {
+                $query->where('name', 'ADMIN');
+            })
+            ->count();
+
+        if ($activeAdminCount <= 1) {
+            throw ValidationException::withMessages([
+                'user' => [
+                    'Cannot modify or deactivate the last active ADMIN.',
+                ],
+            ]);
+        }
     }
+    public function getAll(int $perPage = 10)
+    {
+        return User::with('role')
+            ->latest()
+            ->paginate($perPage);
+    }
+
+    public function findById(int $id): User
+    {
+        return User::with('role')->findOrFail($id);
+    }
+
+    public function create(array $data): User
+    {
+        $data['password'] = Hash::make($data['password']);
+
+        $user = User::create($data);
+
+        return $user->load('role');
+    }
+
+    public function update(User $user, array $data): User
+    {
+        if (
+            isset($data['role_id']) &&
+            $data['role_id'] != $user->role_id &&
+            $user->role?->name === 'ADMIN'
+        ) {
+            $this->ensureNotLastActiveAdmin();
+        }
+
+        $user->update($data);
+
+        return $user->fresh('role');
+    }
+
+    public function deactivate(User $user): User
+    {
+        if ($user->role?->name === 'ADMIN') {
+            $this->ensureNotLastActiveAdmin();
+        }
+
+        $user->update([
+            'is_active' => false,
+        ]);
+
+        return $user->fresh('role');
+    }
+
+    public function updateStatus(User $user, bool $isActive): User
+    {
+        if (
+            !$isActive &&
+            $user->role?->name === 'ADMIN'
+        ) {
+            $this->ensureNotLastActiveAdmin();
+        }
+
+        $user->update([
+            'is_active' => $isActive,
+        ]);
+
+        return $user->fresh('role');
+    }
+
+    
 }
