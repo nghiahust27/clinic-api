@@ -43,7 +43,7 @@ trait ApiResponse
         return response()->json([
             'success' => true,
             'message' => $message,
-            'data' => $response['data'],
+            'data' => $response['data']?? [],
             'meta' => $response['meta'] ?? [],
         ]);
     }
