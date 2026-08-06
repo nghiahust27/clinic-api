@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AppointmentController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DoctorController;
 use App\Http\Controllers\Api\PatientController;
@@ -19,7 +20,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('permission')->group(function () {
 
         Route::apiResource('users', UserController::class);
-
         Route::patch('/users/{user}/status',
             [UserController::class, 'updateStatus']
         );
@@ -28,6 +28,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('doctors', DoctorController::class);
 
         Route::apiResource('patients', PatientController::class);
+
+        Route::apiResource('appointments', AppointmentController::class);
+        Route::patch('/appointments/{appointment}/status',
+            [AppointmentController::class, 'updateStatus']
+        );
     });
 
 }); 
