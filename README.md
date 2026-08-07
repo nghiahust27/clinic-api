@@ -579,7 +579,26 @@ admin@clinic.test
 ```bash
 docker compose exec app php artisan migrate:fresh --seed
 ```
+## T2.1 Patients
 
+Đã tạo bảng `patients` gồm:
+
+- code (unique)
+- full_name
+- gender
+- date_of_birth
+- phone
+- email (nullable)
+- address (nullable)
+- timestamps
+- soft delete
+
+Index phục vụ tìm kiếm:
+
+- phone
+- full_name
+
+`code` sử dụng unique index.
 
 ## 16. Useful Commands
 
@@ -700,3 +719,38 @@ API Resource
 JSON Envelope
     ↓
 Client
+
+## Appointment Rules
+
+### Appointment Status State Machine
+
+Appointment sử dụng state machine để kiểm soát việc chuyển trạng thái lịch khám.  
+Hệ thống chỉ cho phép các transition hợp lệ nhằm đảm bảo trạng thái lịch khám không bị thay đổi sai quy tắc.
+
+### Allowed Status Transitions
+
+Các trạng thái được phép chuyển đổi:
+scheduled → confirmed → completed
+
+scheduled → cancelled
+
+confirmed → cancelled
+
+### Status Description
+
+| Status | Description |
+|---|---|
+| scheduled | Lịch khám đã được tạo, đang chờ xác nhận |
+| confirmed | Lịch khám đã được xác nhận |
+| completed | Lịch khám đã hoàn thành |
+| cancelled | Lịch khám đã bị hủy |
+
+### Invalid Status Transition
+
+Các transition không nằm trong flow trên sẽ bị từ chối.
+
+Ví dụ:
+completed → confirmed
+completed → scheduled
+cancelled → scheduled
+cancelled → confirmed

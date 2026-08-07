@@ -20,4 +20,8 @@ class Appointment extends Model
     {
         return $this->belongsTo(Doctor::class);
     }
+    public function examinations()
+    {
+        return $this->belongsTo(Examination::class);
+    }
 }
