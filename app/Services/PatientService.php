@@ -11,9 +11,9 @@ class PatientService
     {
         return Patient::query()->when($q, function($query) use ($q){
             $query->where(function ($sub) use($q) {
-                $sub->where('full_name', 'ILIKE', "%$q%")
-                ->orWhere('phone', 'ILIKE', "%$q%")
-                ->orWhere('code', 'ILIKE', "%$q%");
+                $sub->where('full_name', 'LIKE', "%$q%")
+                ->orWhere('phone', 'LIKE', "%$q%")
+                ->orWhere('code', 'LIKE', "%$q%");
                 
             });
         })->latest()->paginate(10);
