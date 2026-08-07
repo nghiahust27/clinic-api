@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -9,7 +10,7 @@ use Override;
 
 class Patient extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasFactory;
     protected $fillable = ['code', 'full_name', 'gender', 
     'date_of_birth', 'phone', 'email', 'address'];
 
@@ -18,5 +19,5 @@ class Patient extends Model
     {
         return $this->hasMany(Appointment::class);
     }
-
+    
 }
