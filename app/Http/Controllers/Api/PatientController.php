@@ -34,7 +34,8 @@ class PatientController extends Controller
         );
         return new PatientResource($patient);
     }
-    public function update(UpdatePatientRequest $request)
+    public function update(UpdatePatientRequest $request, 
+    Patient $patient)
     {
         $patient = $this->patientService->update(
             $patient, $request->validated()
