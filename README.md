@@ -654,3 +654,49 @@ Dừng container và xóa volume database:
 ```bash
 docker compose down -v
 ```
+## Kiến trúc đã chọn
+
+Project sử dụng kiến trúc Controller + Service (Kiến trúc B).
+
+### Lý do lựa chọn
+
+- Controller chịu trách nhiệm tiếp nhận HTTP request và trả HTTP response.
+- Form Request chịu trách nhiệm validate dữ liệu đầu vào.
+- Service chịu trách nhiệm xử lý business logic.
+- Model/Eloquent chịu trách nhiệm tương tác với database.
+- API Resource chịu trách nhiệm định dạng dữ liệu trả về API.
+- Không sử dụng Repository vì project sử dụng Eloquent trực tiếp và chưa có nhu cầu thay đổi tầng persistence.
+
+### Sơ đồ luồng request
+
+Client
+    ↓
+API Route
+    ↓
+Sanctum Authentication
+    ↓
+Permission Middleware
+    ↓
+Controller
+    ↓
+Form Request
+    ↓
+Service
+    ↓
+Eloquent Model
+    ↓
+Database
+
+Response:
+
+Database
+    ↓
+Model
+    ↓
+Service
+    ↓
+API Resource
+    ↓
+JSON Envelope
+    ↓
+Client
