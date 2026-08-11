@@ -2,26 +2,28 @@
 
 namespace App\Services;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class UserService
 {
+    private const MESSAGE = 'Cannot modify or deactivate the last active ADMIN.';
+
     private function ensureNotLastActiveAdmin(): void
     {
         $activeAdminCount = User::where('is_active', true)
             ->whereHas('role', function ($query) {
-                $query->where('name', 'ADMIN');
+                $query->where('name', Role:: ADMIN);
             })
             ->count();
 
         if ($activeAdminCount <= 1) {
             throw ValidationException::withMessages([
                 'user' => [
-                    'Cannot modify or deactivate the last active ADMIN.',
-                ],
-            ]);
+                    self::MESSAGE
+            ]]);
         }
     }
     public function getAll(int $perPage = 10)
