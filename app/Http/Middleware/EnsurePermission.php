@@ -22,14 +22,12 @@ class EnsurePermission
         }
 
         $route = $request->route();
-
         $controller = $route->getController();
 
         if (!$controller) {
             return $next($request);
         }
 
-       
         $controllerName = class_basename($controller);
 
         $controllerMap = [

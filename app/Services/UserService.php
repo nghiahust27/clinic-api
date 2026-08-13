@@ -2,36 +2,47 @@
 
 namespace App\Services;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class UserService
 {
+    private const MESSAGE = 'Cannot modify or deactivate the last active ADMIN.';
+
     private function ensureNotLastActiveAdmin(): void
     {
         $activeAdminCount = User::where('is_active', true)
             ->whereHas('role', function ($query) {
-                $query->where('name', 'ADMIN');
+                $query->where('name', Role:: ADMIN);
             })
             ->count();
 
         if ($activeAdminCount <= 1) {
             throw ValidationException::withMessages([
                 'user' => [
-                    'Cannot modify or deactivate the last active ADMIN.',
-                ],
-            ]);
+                    self::MESSAGE
+            ]]);
         }
     }
-    public function getAll(int $perPage = 10)
+    public function getAll( ?string $search = null)
     {
-        return User::with('role')
+        $query = User::with('role');
+        if($search)
+            {
+                $query->where(function ($q)use($search) {
+                    $q -> where('name', 'ILIKE', "%{$search}%")
+                    ->orWhere('email', 'ILIKE', "%{$search}%");
+                });
+            } 
+        return $query
             ->latest()
-            ->paginate($perPage);
+            ->paginate(10)
+            ->withQueryString();
     }
 
-    public function findById(int $id): User
+    public function findById(int $id): User 
     {
         return User::with('role')->findOrFail($id);
     }
@@ -69,6 +80,19 @@ class UserService
         $user->update([
             'is_active' => false,
         ]);
+
+        return $user->fresh('role');
+    }
+    public function activate(User $user): User
+    {
+        if ($user->role?->name === 'ADMIN') {
+            $this->ensureNotLastActiveAdmin();
+        }
+
+        $user->update([
+            'is_active' => true,
+        ]);
+        $user->save();
 
         return $user->fresh('role');
     }

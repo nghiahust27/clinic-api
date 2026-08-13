@@ -23,7 +23,7 @@ class AdjuststockRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'quantity' => ['required', 'integer'],
+            'quantity' => ['required', 'integer', 'not_in:0'],
             'note'=> ['nullable', 'string', 'max:255']
         ];
     }

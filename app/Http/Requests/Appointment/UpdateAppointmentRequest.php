@@ -23,8 +23,8 @@ class UpdateAppointmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'doctor_id' => ['sometimes', 'exists: doctor_id'],
-            'scheduled_at'=>['sometimes', 'date'],
+            'doctor_id' => ['required', 'exists:doctors,id'],
+            'scheduled_at'=>['required', 'date', 'after:now'],
             'reason' => ['nullable', 'string']
         ];
     }

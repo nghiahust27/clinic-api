@@ -24,9 +24,6 @@ class StoreAppointmentRequest extends FormRequest
     {
         return [
             'doctor_id' => ['required', 'integer','exists:doctors,id'],
-
-            'patient_id' => ['required', 'integer',
-                'exists:patients,id' ],
             'scheduled_at' => ['required', 'date', 'after:now'],
             'reason' => ['nullable', 'string']
         ];

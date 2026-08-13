@@ -16,7 +16,11 @@ class PatientService
                 ->orWhere('code', 'LIKE', "%$q%");
                 
             });
-        })->latest()->paginate(10);
+        })->latest()->paginate(5);
+    }
+     public function findById(int $id): Patient 
+    {
+        return Patient::findOrFail($id);
     }
     public function generateCode():string{
         $lastPatient = Patient::withTrashed()
@@ -50,5 +54,10 @@ class PatientService
     public function delete(Patient $patient)
     {
         return $patient->delete();
+    }
+    public function getTrashed()
+    {
+        return Patient::onlyTrashed()->latest('deleted_at')
+        ->paginate(5);
     }
 }

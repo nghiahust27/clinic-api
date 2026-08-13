@@ -21,13 +21,18 @@ class AppointmentService
     public function getAll(array $filters, int $perPage=10)
     {
         return Appointment::query()->with(['patient', 'doctor.user'])
-        ->when($filters['doctor_id']??null,
-        function($q, $doctorId){
-            $q->where('doctor_id', $doctorId);
-        })->when($filters['data'] ?? null,
+        ->when($filters['full_name'] ?? null, function ($q, $fullName) {
+            $q->whereHas('patient', function ($query) use ($fullName) {
+                $query->where('full_name', 'ILIKE', "%{$fullName}%");
+            });
+        })
+
+        ->when($filters['date'] ?? null,
         function($q, $date){
-            $q->whereData('scheduled_at', $date);
-        })->when($filters['status'] ?? null,
+            $q->whereDate('scheduled_at', $date);
+        })
+        
+        ->when($filters['status'] ?? null,
         function ($q, $status) {
             $q->where('status', $status);
         })->latest()->paginate($perPage);

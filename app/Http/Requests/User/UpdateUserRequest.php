@@ -24,6 +24,8 @@ class UpdateUserRequest extends FormRequest
 
             'role_id' => ['sometimes','required','integer',
                 'exists:roles,id',
+
+            'password'=>['nullable', 'string', 'min:8', 'confirmed']
             ],
         ];
     }
