@@ -16,15 +16,16 @@ class Appointment extends Model
     protected $casts = ['scheduled_at'=> 'datetime'];
     public function patient()
     {
-        return $this->belongsTo(Patient::class);
+        return $this->belongsTo(Patient::class)
+        ->withTrashed();
 
     }
     public function doctor()
     {
         return $this->belongsTo(Doctor::class);
     }
-    public function examinations()
+    public function examination()
     {
-        return $this->belongsTo(Examination::class);
+        return $this->hasOne(Examination::class, 'appointment_id');
     }
 }

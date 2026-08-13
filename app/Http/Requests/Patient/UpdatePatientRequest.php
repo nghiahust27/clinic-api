@@ -26,9 +26,9 @@ class UpdatePatientRequest extends FormRequest
         $patient = $this->route('patient');
 
         return [
-            'code'=> ['required', Rule::unique('patients', 'code')
+            'code'=> ['nullable', Rule::unique('patients', 'code')
             ->ignore($patient->id)],
-            'full_name'=>['required', 'string', 'max:255'],
+            'full_name'=>['nullable', 'string', 'max:255'],
             'gender'=>['nullable', 'in:male,female,other'],
             'date_of_birth'=>['nullable', 'date'],
             'phone'=>['nullable', 'string'],

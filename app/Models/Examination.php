@@ -14,4 +14,8 @@ class Examination extends Model
     {
         return $this->belongsTo(Appointment::class);
     }
+    public function prescription()
+    {
+        return $this->hasOne(Prescription::class);
+    }
 }

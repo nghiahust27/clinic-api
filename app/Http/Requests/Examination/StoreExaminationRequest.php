@@ -23,8 +23,7 @@ class StoreExaminationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'appointment_id' => ['required', 'integer',
-                 'unique:examinations,appointment_id' ],
+
             'diagnosis' => ['required', 'string'],
 
             'note' => ['nullable', 'string']

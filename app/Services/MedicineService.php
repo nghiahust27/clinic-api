@@ -47,4 +47,17 @@ class MedicineService
         $medicine->update(['stock' => $newStock]);
         return $medicine;
     }
+
+    public function deactivate(Medicine $medicine)
+    {
+        $medicine->update(['is_active'=>false]);
+        return $medicine->fresh();
+    }
+
+    public function activate(Medicine $medicine)
+    {
+        $medicine->update(['is_active'=>true]);
+        return $medicine->fresh();
+    }
+
 }

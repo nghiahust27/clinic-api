@@ -13,6 +13,7 @@ class DoctorService
      */
     public function __construct()
     {}
+    
     public function getAll(int $perPage = 5)
     {
         return Doctor::with('user', 'specialty')

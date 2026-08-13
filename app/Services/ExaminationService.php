@@ -9,14 +9,25 @@ use Illuminate\Support\Facades\DB;
 
 class ExaminationService
 {
-    public function getAll(int $perPage = 5)
+    public function getAll(array $filters, int $perPage = 5)
     {
-        return Examination::latest()->paginate($perPage);
+        return Examination::query()->with(['appointment.patient',
+         'appointment.doctor.user'])
+        ->when($filters['full_name'] ?? null, function ($q, $fullName) {
+            $q->whereHas('appointment.patient', function ($query) use ($fullName) {
+                $query->where('full_name', 'ILIKE', "%{$fullName}%");
+            });
+        })
+
+        ->when($filters['date'] ?? null,
+        function($q, $date){
+            $q->whereDate('examinated_at', $date);
+        })->latest()->paginate($perPage);
     }
 
     public function create(array $data)
     {
-        return DB::transaction(function() use($data){
+        return DB::transaction(function () use($data){
             $appointment = Appointment::with('patient')
             ->findOrFail($data['appointment_id']);
 

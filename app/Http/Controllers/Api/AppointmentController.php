@@ -60,7 +60,7 @@ class AppointmentController extends Controller
             'message'=>'Appointment updated successfully',
             'data'=> new AppointmentResource($appointment)
         ]);
-    }
+    }   
     public function updateStatus(UpdateAppointmentStatusRequest $request,
     Appointment $appointment)
     {
