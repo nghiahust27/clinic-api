@@ -25,7 +25,7 @@ class StoreExaminationRequest extends FormRequest
         return [
 
             'diagnosis' => ['required', 'string'],
-
+            'examination_fee' => ['required', 'decimal:0,2'],
             'note' => ['nullable', 'string']
     
         ];

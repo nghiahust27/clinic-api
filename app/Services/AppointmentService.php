@@ -11,7 +11,7 @@ use PhpParser\Node\Expr\FuncCall;
 
 class AppointmentService
 {
-    private array $statusTrainsitions = [
+    private array $statusTransitions = [
         'scheduled' => ['confirmed', 'cancelled'],
         'confirmed' => ['completed', 'cancelled'],
         'completed' => [],
@@ -74,7 +74,6 @@ class AppointmentService
     public function update(Appointment $appointment, array $data)
     {
 
-
         if($appointment->status !=='scheduled')
         {
             abort(422, 'Only scheduled appointment can be updated');
@@ -90,8 +89,8 @@ class AppointmentService
     public function updateStatus(Appointment $appointment, string $status)
     {
         $currentStatus = $appointment->status;
-        if(!isset($this->statusTrainsitions[$currentStatus])  || 
-        !in_array($status, $this->statusTrainsitions[$currentStatus]))
+        if(!isset($this->statusTrainstions[$currentStatus])  || 
+        !in_array($status, $this->statusTransitions[$currentStatus]))
         {
             abort(422, "cannot change status from {$currentStatus} to
             {$status}");

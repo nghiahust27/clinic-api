@@ -1112,6 +1112,18 @@
                     </div>
                 @endif
             </div>
+            <div class="card-header">
+                <h2>
+                    Examination Fee
+                </h2>
+            </div>
+            <div class="card-body">
+
+                <div class="reason-box">
+                    {{ $examination->examination_fee }}
+                </div>
+
+            </div>
         </div>
 
         

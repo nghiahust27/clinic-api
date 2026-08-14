@@ -38,7 +38,7 @@ class AppointmentController extends Controller
         ]);
 
         return view('appointments.show', compact('appointment'));
-        dd($appointment);
+
     }
     
     public function create(Patient $patient)
