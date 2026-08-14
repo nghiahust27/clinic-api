@@ -520,6 +520,21 @@
                 >
                     Edit
                 </a>
+            @endif  
+            @if(
+                auth()->user()->hasPermission(
+                    'INVOICES.CREATE'
+                )
+            )
+                <a
+                    href="{{ route(
+                         'examinations.invoices.create',
+                        [$prescription->examination]
+                    ) }}"
+                    class="prescription-btn prescription-btn-primary"
+                >
+                    Create Invoice
+                </a>
             @endif
 
         </div>

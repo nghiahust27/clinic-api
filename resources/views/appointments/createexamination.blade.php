@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 
-@section('title', 'Create Appointment')
+@section('title', 'Create Examination')
 
-@section('page-title', 'Create Appointment')
+@section('page-title', 'Create Examination')
 
 
 @section('content')
@@ -289,11 +289,11 @@
         <div>
 
             <h1>
-                Create Appointment
+                Create Examination
             </h1>
 
             <p>
-                Schedule an appointment for this patient.
+                Schedule an     examination for this patient.
             </p>
 
         </div>
@@ -323,8 +323,6 @@
                 <label class="form-label">
                     Patient
                 </label>
-
-
                 <div class="patient-box">
 
                     <div class="patient-avatar">
@@ -357,30 +355,20 @@
                                 · {{ $appointment->patient->phone }}
 
                             @endif
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
 
 
-
             {{-- DOCTOR --}}
-
             <div class="form-group">
-
                 <label class="form-label">
                     Doctor
                 </label>
 
-
                 <div class="patient-box">
-
                     <div class="patient-avatar">
-
                         {{ strtoupper(
                             substr($appointment->
                                 doctor->user->name,
@@ -388,30 +376,20 @@
                                 1
                             )
                         ) }}
-
                     </div>
 
-
                     <div>
-
                         <div class="patient-name">
                             {{ $appointment->doctor->user->name}}
                         </div>
 
-
                         <div class="patient-meta">
-
                             Specialty:
                             {{ $appointment->doctor->specialty->name }}
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
 
 
             {{-- DIANOSIS --}}
@@ -458,6 +436,21 @@
                     placeholder="Enter note..."
                 >{{ old('note') }}</textarea>
 
+                <label
+                    for="examination_fee"
+                    class="form-label"
+                >
+                    Fee
+                </label>
+
+                <textarea
+                    id="examination_fee"
+                    name="examination_fee"
+                    rows="1"
+                    class="form-input"
+                    placeholder="Enter fee..."
+                >{{ old('examination_fee') }}</textarea>
+
             </div>
 
 
@@ -480,7 +473,7 @@
                     type="submit"
                     class="btn btn-primary"
                 >
-                    Create Appointment
+                    Create Examination
                 </button>
 
             </div>

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Examination;
+namespace App\Http\Requests\Invoice;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateExaminationRequest extends FormRequest
+class StoreInvoiceRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,9 +23,8 @@ class UpdateExaminationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'diagnosis'=>['sometimes', 'string'],
-            'examination_fee' => ['nullable', 'decimal:0,2'],
-            'note' => ['nullable', 'string']
+            'examination_id' => ['required', 'integer','exists:examinations,id'],
+            'discount' =>['required', 'numeric','min:0'],
         ];
     }
 }

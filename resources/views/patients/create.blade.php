@@ -1,8 +1,8 @@
 
 @extends('layouts.app')
 
-@section('title', 'Edit Patient')
-@section('page-title', 'Edit Patient')
+@section('title', 'Add Patient')
+@section('page-title', 'Add Patient')
 
 @section('content')
 

@@ -61,6 +61,7 @@ class ExaminationService
                 'patient_id' => $appointment->patient_id,
                 'doctor_id' => $appointment->doctor_id,
                 'diagnosis' => $data['diagnosis'] ?? null,
+                 'examination_fee' => $data['examination_fee'],
                 'note' => $data['note'] ?? null,
                 'examinated_at'=> now()
             ]);

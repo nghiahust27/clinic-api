@@ -180,9 +180,6 @@
 
                 @endif
 
-
-                
-
             </div>
 
         @endif
@@ -207,15 +204,15 @@
                 {{-- Invoices --}}
 
                 @if(auth()->user()->hasPermission('INVOICES.FINDALL'))
-
-                    <a>
+                    <a
+                        href="{{ route('invoices.index') }}"
+                        class="nav-item {{ request()->routeIs('invoices.*') ? 'active' : '' }}"
+                    >
                         <span class="nav-icon">
                             ▧
                         </span>
 
                         Invoices
-
-                    </a>
 
                 @endif
 
@@ -223,7 +220,9 @@
                 {{-- Payments --}}
 
                 @if(auth()->user()->hasPermission('PAYMENTS.FINDALL'))
-
+                    <a
+                       
+                    >
 
 
                         <span class="nav-icon">

@@ -9,7 +9,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\UserController;
 use App\Http\Controllers\Web\AuthController;
+use App\Http\Controllers\Web\InvoiceController;
 use App\Http\Controllers\Web\PrescriptionController;
+use App\Models\Invoice;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -107,6 +109,16 @@ Route::middleware(['auth','permission'])->group(function(){
     '/prescriptions/{prescription}',
         [PrescriptionController::class, 'update']
     )->name('prescriptions.update');
+
+    //...INVOICE
+    Route::resource('/invoices', InvoiceController::class);
+     Route::get(
+    '/examinations/{examination}/invoices/create',
+        [InvoiceController::class, 'create']
+    )->name('examinations.invoices.create');
+     Route::patch('/invoices/{invoice}/status', 
+    [InvoiceController::class, 'updateStatus'])
+    ->name('invoices.updateStatus');
     
 });
 

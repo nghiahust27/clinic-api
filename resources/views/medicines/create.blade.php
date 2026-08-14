@@ -606,7 +606,7 @@
                             for="price"
                             class="form-label"
                         >
-                            Phone
+                            Price
                             <span class="required">*</span>
                         </label>
 
@@ -642,12 +642,8 @@
 
             <div class="form-section">
 
-
                 <div class="form-grid">
-
-
                     <!-- Code -->
-
                     <div class="form-group">
 
                         <label
@@ -679,8 +675,6 @@
                         @enderror
 
                     </div>
-
-
 
                 </div>
 
