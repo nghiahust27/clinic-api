@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignId('patient_id')->constrained('patients')
             ->cascadeOnDelete();
             $table->string('diagnosis');
-            $table->text('note')->nullable()->change();
+            $table->text('note')->nullable();
             $table->dateTime('examinated_at');
             $table->timestamps();
         });
