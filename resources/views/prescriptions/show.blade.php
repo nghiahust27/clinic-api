@@ -505,8 +505,9 @@
             >
                 ← Back
             </a>
-
-            @if(
+ 
+            @if(!isset($prescription->examination->invoice))
+             @if(
                 auth()->user()->hasPermission(
                     'PRESCRIPTIONS.UPDATE'
                 )
@@ -521,20 +522,37 @@
                     Edit
                 </a>
             @endif  
-            @if(
-                auth()->user()->hasPermission(
-                    'INVOICES.CREATE'
+                @if(
+                    auth()->user()->hasPermission(
+                        'INVOICES.CREATE'
+                    )
                 )
-            )
-                <a
-                    href="{{ route(
-                         'examinations.invoices.create',
-                        [$prescription->examination]
-                    ) }}"
-                    class="prescription-btn prescription-btn-primary"
-                >
-                    Create Invoice
-                </a>
+                    <a
+                        href="{{ route(
+                            'examinations.invoices.create',
+                            [$prescription->examination]
+                        ) }}"
+                        class="prescription-btn prescription-btn-primary"
+                    >
+                        Create Invoice
+                    </a>
+                @endif
+            @else
+                @if(
+                    auth()->user()->hasPermission(
+                        'INVOICES.FINDONE'
+                    )
+                )
+                    <a
+                        href="{{ route(
+                            'invoices.show',
+                            [$prescription->examination->invoice]
+                        ) }}"
+                        class="prescription-btn prescription-btn-primary"
+                    >
+                        View Invoice
+                    </a>
+                @endif
             @endif
 
         </div>

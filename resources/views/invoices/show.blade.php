@@ -1094,6 +1094,7 @@
 
 
                             <div class="medicine-price">
+                                $
 
                                 {{ number_format(
                                     $item
@@ -1104,21 +1105,18 @@
                                     '.'
                                 ) }}
 
-                                VND
 
                             </div>
 
 
                             <div class="medicine-total">
-
+                                 $
                                 {{ number_format(
                                     $medicineTotal,
                                     0,
                                     ',',
                                     '.'
                                 ) }}
-
-                                VND
 
                             </div>
 
@@ -1177,6 +1175,7 @@
                     </span>
 
                     <strong>
+                        $
 
                         {{ number_format(
                             $invoice
@@ -1186,8 +1185,6 @@
                             ',',
                             '.'
                         ) }}
-
-                        VND
 
                     </strong>
 
@@ -1201,6 +1198,8 @@
                     </span>
 
                     <strong>
+                        $
+
 
                         {{ number_format(
                             $invoice->subtotal
@@ -1212,7 +1211,6 @@
                             '.'
                         ) }}
 
-                        VND
 
                     </strong>
 
@@ -1226,6 +1224,7 @@
                     </span>
 
                     <strong>
+                        $
 
                         {{ number_format(
                             $invoice->subtotal,
@@ -1234,7 +1233,6 @@
                             '.'
                         ) }}
 
-                        VND
 
                     </strong>
 
@@ -1249,7 +1247,7 @@
 
                     <strong>
 
-                        -
+                        -$
                         {{ number_format(
                             $invoice->discount,
                             0,
@@ -1257,11 +1255,29 @@
                             '.'
                         ) }}
 
-                        VND
-
                     </strong>
 
                 </div>
+
+                @if(isset($invoice->payments))
+                    <div class="billing-row discount-row">
+
+                        <span>
+                            Paid
+                        </span>
+
+                        <strong>
+
+                            - $
+                            {{ number_format(
+                                $invoice->paid_amount,
+                                0,',','.'
+                            ) }}
+
+                        </strong>
+
+                    </div>
+                @endif
 
 
                 <div class="billing-total">
@@ -1271,39 +1287,40 @@
                     </span>
 
                     <strong>
-
+                        $
                         {{ number_format(
-                            $invoice->total,
+                            $invoice->remaining_amount,
                             0,
                             ',',
                             '.'
                         ) }}
-
-                        VND
 
                     </strong>
 
                 </div>
 
             </div>
-
         </div>
-
     </div>
-
-
-
-
     {{-- FOOTER --}}
+    @if(isset($invoice->status) === 'unpaid')
+        <div>
+            <a
+                href="{{ route('payments.create', 
+                $invoice) }}"
+                class="invoice-btn invoice-btn-primary"
+            >
+                Create Payments
+            </a>
+        </div>
+    @endif
     <div class="invoice-footer-actions">
-
         <a
             href="{{ route('invoices.index') }}"
             class="invoice-btn invoice-btn-secondary"
         >
             ← Back to Invoices
         </a>
-
     </div>
 
 </div>

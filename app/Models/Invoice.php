@@ -21,4 +21,18 @@ class Invoice extends Model
     {
         return $this->belongsTo(Examination::class);
     }
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+   
+    public function getPaidAmountAttribute(): float
+    {
+        return (float) $this->payments->where('status', 'completed')->sum('amount');
+    }
+    public function getRemainingAmountAttribute(): float
+    {
+        $paid = $this->getPaidAmountAttribute();
+        return max(0, $this->total - $paid);
+    }
 }

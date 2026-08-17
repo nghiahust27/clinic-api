@@ -754,3 +754,103 @@ completed → confirmed
 completed → scheduled
 cancelled → scheduled
 cancelled → confirmed
+
+# PayPal Sandbox Setup & Testing
+
+Project sử dụng PayPal Sandbox để mô phỏng thanh toán online.
+Không sử dụng tiền thật trong quá trình phát triển và kiểm thử.
+
+## 1. Tạo tài khoản PayPal Developer
+
+Truy cập:
+
+https://developer.paypal.com/
+
+Đăng nhập bằng tài khoản PayPal hiện có hoặc tạo tài khoản Developer mới.
+
+PayPal Sandbox là môi trường độc lập dùng để mô phỏng giao dịch thật mà không sử dụng tiền thật.
+
+Sau khi đăng nhập Developer Dashboard, chuyển sang môi trường:
+
+**Sandbox**
+
+Tài liệu chính thức:
+
+https://developer.paypal.com/tools/sandbox/
+
+---
+
+## 2. Tạo Sandbox App
+
+Trong PayPal Developer Dashboard:
+
+1. Chọn **Apps & Credentials**.
+2. Chọn tab **Sandbox**.
+3. Chọn **Create App**.
+4. Đặt tên cho application, ví dụ:
+
+```text
+Clinic Management API
+```
+
+5. Tạo application.
+
+Sau khi tạo app, PayPal cung cấp:
+
+Client ID
+Client Secret
+
+Client ID dùng để xác định ứng dụng.
+
+Client Secret dùng để xác thực ứng dụng khi lấy OAuth access token.
+
+Không commit Client Secret vào Git.
+
+Tài liệu chính thức:
+
+## 3. Lấy Client ID và Client Secret
+
+Trong:
+
+Developer Dashboard
+    -> Apps & Credentials
+    -> Sandbox
+
+Chọn application vừa tạo.
+
+Copy:
+
+Client ID
+Client Secret
+
+Sau đó thêm vào file .env:
+
+PAYPAL_CLIENT_ID=your_sandbox_client_id
+PAYPAL_CLIENT_SECRET=your_sandbox_client_secret
+PAYPAL_MODE=sandbox
+
+Ví dụ:
+
+PAYPAL_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+PAYPAL_CLIENT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+PAYPAL_MODE=sandbox
+
+Không sử dụng credential của môi trường Live.
+
+## 4. Tạo Sandbox Accounts
+
+Sau khi đăng ký app xong, trở về trang Dashboard, tìm Sandbox Accounts:
+https://developer.paypal.com/dashboard/accounts
+
+Trong đó có chứa những Sandbox account có sẵn được cung cấp để test, hoặc bạn có thể tạo tài khoản mới bằng Create account.
+
+## 5.  Thẻ Visa test sandbox
+
+Trở về trang Dashboard, tìm Test creadit cards:
+https://developer.paypal.com/credit-card-number-generator#link-creditcardgeneratorfortesting
+
+Trong đó có chứa những thẻ ảo do PayPal Dev cung cấp để test. Bạn có thể kéo xuống dưới để tự tạo thẻ ảo cho mình
+
+## 6.CẢNH BÁO BẢO MẬT
+Hệ thống hiện chỉ hỗ trợ tích hợp ở môi trường **PayPal Sandbox**. 
+Tuyệt đối **KHÔNG** sử dụng API Credential của tài khoản PayPal Live (thật) trong môi trường phát triển và thử nghiệm.

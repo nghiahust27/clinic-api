@@ -12,6 +12,32 @@ use Illuminate\Validation\ValidationException;
 
 class PrescriptionService
 {
+    // ensure that only none Invoiced Prescription can be updating
+    private function ensurePrescriptionIsNotInvoiced(Prescription $prescription)
+    {
+        if($prescription->examination->invoice()->exists())
+        {
+            throw ValidationException::withMessages([
+                'prescription'=>['Cannot modify prescription because
+                an invoice has already been generated']
+            ]);
+        }
+    }
+
+
+    private function ensureItemBelongsToPrescription(
+        Prescription $prescription,
+        PrescriptionItem $item
+    ): void {
+        if ($item->prescription_id !== $prescription->id) {
+            throw ValidationException::withMessages([
+                'item' => [
+                    'The prescription item does not belong to this prescription.',
+                ],
+            ]);
+        }
+    }
+
     public function getAll(int $perPage = 10)
     {
         return Prescription::query()->with([
@@ -77,6 +103,7 @@ class PrescriptionService
 
     public function update(Prescription $prescription, array $data)
     {
+        $this->ensurePrescriptionIsNotInvoiced($prescription);
         $prescription->update([
             'note'=> $data['note'] ?? null,
         ]);
@@ -91,6 +118,7 @@ class PrescriptionService
 
     public function createItem(Prescription $prescription, array $data)
     {
+        $this->ensurePrescriptionIsNotInvoiced($prescription);
         $medicine = Medicine::query()->lockForUpdate()
         ->findOrFail($data['medicine_id']);
 
@@ -137,26 +165,15 @@ class PrescriptionService
             return $this->createItem($prescription, $data);
         });
     }
-
-
-     private function ensureItemBelongsToPrescription(
-        Prescription $prescription,
-        PrescriptionItem $item
-    ): void {
-        if ($item->prescription_id !== $prescription->id) {
-            throw ValidationException::withMessages([
-                'item' => [
-                    'The prescription item does not belong to this prescription.',
-                ],
-            ]);
-        }
-    }
+    
+    
 
     public function updateItem(Prescription $prescription, 
     PrescriptionItem $item, array $data)
     {
         return DB::transaction(function() use($prescription,
         $item, $data){
+            $this->ensurePrescriptionIsNotInvoiced($prescription);
             $this->ensureItemBelongsToPrescription($prescription, $item);
             $oldQuantity = $item->quantity;
             $newQuantity = $data['quantity'];       
@@ -205,7 +222,7 @@ class PrescriptionService
             $prescription,
             $item
         ) {
-
+            $this->ensurePrescriptionIsNotInvoiced($prescription);
             $this->ensureItemBelongsToPrescription(
                 $prescription,
                 $item
