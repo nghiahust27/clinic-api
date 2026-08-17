@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('patient_id')->constrained('patients')
-            ->cascadeOnDelete();
+            ->restrictOnDelete();
 
             $table->foreignId('doctor_id')->constrained('doctors')
-            ->cascadeOnDelete();
+            ->restrictOnDelete();
 
             $table->dateTime('scheduled_at');
 
