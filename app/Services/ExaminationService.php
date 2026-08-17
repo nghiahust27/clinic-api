@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\ExaminationCreated;
 use App\Models\Appointment;
 use App\Models\Examination;
 use Illuminate\Validation\ValidationException;
@@ -68,6 +69,7 @@ class ExaminationService
             $appointment->update([
                 'status'=>'completed'
             ]);
+            event(new ExaminationCreated($examination));
             return $examination;
         });
     }

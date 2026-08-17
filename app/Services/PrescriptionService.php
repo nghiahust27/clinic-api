@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\PrescriptionCreated;
 use App\Models\Examination;
 use App\Models\Medicine;
 use App\Models\Patient;
@@ -94,6 +95,7 @@ class PrescriptionService
                 ]);
             }
 
+            event(new PrescriptionCreated($prescription));  
             return $prescription->load([
                 'examination', 'doctor.user', 'items.medicine'
             ]);

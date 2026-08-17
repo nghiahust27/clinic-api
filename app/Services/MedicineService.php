@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\StockAdjusted;
 use App\Http\Requests\Medicine\StoreMedicineRequest;
 use App\Models\Medicine;
 use Illuminate\Validation\ValidationException;
@@ -35,7 +36,8 @@ class MedicineService
     }
 
     public function adjustStock(Medicine $medicine, array $data)
-    {
+    {   
+        $oldStock = $medicine->stock;
         $newStock = $medicine->stock + $data['quantity'];
 
         if($newStock < 0)
@@ -45,6 +47,12 @@ class MedicineService
             ]);
         }
         $medicine->update(['stock' => $newStock]);
+        event(new StockAdjusted(
+            $medicine,
+            $data['quantity'],
+            $oldStock,
+            $newStock
+        ));
         return $medicine;
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\InvoiceCreated;
 use App\Models\Examination;
 use App\Models\Invoice;
 use Illuminate\Support\Facades\DB;
@@ -71,6 +72,7 @@ class InvoiceService
                 'status' => 'unpaid',
                 'issued_at' => now(),
             ]);
+            event(new InvoiceCreated($invoice));
             return $invoice->load([
                 'examination.appointment.patient',
                 'examination.prescription.items.medicine',

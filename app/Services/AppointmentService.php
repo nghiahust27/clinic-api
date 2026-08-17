@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\AppointmentStatusUpdated;
 use App\Models\Appointment;
 use App\Models\Doctor;
 use Illuminate\Support\Facades\App;
@@ -86,16 +87,31 @@ class AppointmentService
         return $appointment->fresh();
     }
 
-    public function updateStatus(Appointment $appointment, string $status)
+    public function updateStatus(Appointment $appointment, 
+    string $status)
     {
-        $currentStatus = $appointment->status;
-        if(!isset($this->statusTrainstions[$currentStatus])  || 
-        !in_array($status, $this->statusTransitions[$currentStatus]))
-        {
-            abort(422, "cannot change status from {$currentStatus} to
-            {$status}");
+        $oldStatus = $appointment->status;
+
+        if (
+            !isset($this->statusTransitions[$oldStatus]) ||
+            !in_array($status, $this->statusTransitions[$oldStatus])
+        ) {
+            abort(
+                422,
+                "cannot change status from {$oldStatus} to {$status}"
+            );
         }
-        $appointment->update(['status'=>$status]);
+
+        $appointment->update([
+            'status' => $status,
+        ]);
+
+        event(new AppointmentStatusUpdated(
+            $appointment,
+            $oldStatus,
+            $status
+        ));
+
         return $appointment;
     }
 
