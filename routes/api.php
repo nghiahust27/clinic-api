@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\DoctorController;
 use App\Http\Controllers\Api\ExaminationController;
 use App\Http\Controllers\Api\MedicineController;
 use App\Http\Controllers\Api\PatientController;
+use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\PrescriptionController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\SpecialtyController;
@@ -14,6 +15,15 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::post('/login', [AuthController::class, 'login']);
+
+Route::get(
+    'payments/paypal/success',
+    [PaymentController::class, 'paypalSuccess']
+);
+Route::get(
+    'payments/paypal/cancel',
+    [PaymentController::class, 'paypalCancel']
+);
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -72,6 +82,17 @@ Route::middleware('auth:sanctum')->group(function () {
                 'prescriptions/{prescription}/items/{item}',
                 [PrescriptionController::class, 'removeItem']
             )->name('prescriptions.items.remove');
+
+            //...PAYMENT...
+            Route::post(
+                'invoices/{invoice}/payments',
+                [PaymentController::class, 'store']
+            );
+            Route::post(
+                'payments/{payment}/capture',
+                [PaymentController::class, 'capture']  
+            );
+    
         });
         
     });

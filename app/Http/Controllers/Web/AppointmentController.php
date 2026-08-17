@@ -102,5 +102,21 @@ class AppointmentController extends Controller
         return redirect()->route('appointments.show', $appointment)
         ->with('success', 'Appointment status updated successfully');
     }
+    public function paypalSuccess(Request $request)
+    {
+        return response()->json([
+            'success' => true,
+            'message' => 'PayPal payment approved.',
+            'token' => $request->query('token'),
+            'payer_id' => $request->query('PayerID'),
+        ]);
+    }
+    public function paypalCancel()
+    {
+        return response()->json([
+            'success' => false,
+            'message' => 'PayPal payment cancelled.',
+        ]);
+    }
 
 }

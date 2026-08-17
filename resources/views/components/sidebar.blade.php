@@ -221,7 +221,8 @@
 
                 @if(auth()->user()->hasPermission('PAYMENTS.FINDALL'))
                     <a
-                       
+                        href="{{ route('payments.index') }}"
+                        class="nav-item {{ request()->routeIs('payments.*') ? 'active' : '' }}"
                     >
 
 

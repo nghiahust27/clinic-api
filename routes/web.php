@@ -10,6 +10,7 @@ use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\UserController;
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\InvoiceController;
+use App\Http\Controllers\Web\PaymentController;
 use App\Http\Controllers\Web\PrescriptionController;
 use App\Models\Invoice;
 use Illuminate\Support\Facades\Route;
@@ -116,9 +117,29 @@ Route::middleware(['auth','permission'])->group(function(){
     '/examinations/{examination}/invoices/create',
         [InvoiceController::class, 'create']
     )->name('examinations.invoices.create');
+    
      Route::patch('/invoices/{invoice}/status', 
     [InvoiceController::class, 'updateStatus'])
     ->name('invoices.updateStatus');
+    
+    //...PAYMENT
+
+    Route::get('/payments', [PaymentController::class, 'index'])
+    ->name('payments.index');
+    Route::get('invoices/{invoice}/payments/create', 
+    [PaymentController::class, 'create'])->name('payments.create');
+    Route::post('invoices/{invoice}/payments', 
+    [PaymentController::class, 'store'])->name('payments.store');
+
+
+    Route::get('payments/{payment}/card', 
+    [PaymentController::class, 'showCardForm'])->name('payments.card');
+
+
+    Route::get('payments/paypal/success', 
+    [PaymentController::class, 'paypalSuccess'])->name('payments.paypal.success');
+    Route::get('payments/paypal/cancel', 
+    [PaymentController::class, 'paypalCancel'])->name('payments.paypal.cancel');
     
 });
 
