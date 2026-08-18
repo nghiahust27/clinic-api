@@ -1,12 +1,100 @@
-
 <?php
 
+use App\Http\Controllers\Api\AppointmentController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DoctorController;
+use App\Http\Controllers\Api\ExaminationController;
+use App\Http\Controllers\Api\MedicineController;
+use App\Http\Controllers\Api\PatientController;
+use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\PrescriptionController;
+use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\SpecialtyController;
+
 use Illuminate\Support\Facades\Route;
+
 
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::get(
+    'payments/paypal/success',
+    [PaymentController::class, 'paypalSuccess']
+);
+Route::get(
+    'payments/paypal/cancel',
+    [PaymentController::class, 'paypalCancel']
+);
+
 Route::middleware('auth:sanctum')->group(function () {
+
     Route::post('/logout', [AuthController::class, 'logout']);
+
     Route::get('/me', [AuthController::class, 'me']);
-});
+
+    Route::middleware('permission')->group(function () {
+
+        //User
+        Route::name('api.')->group(function(){
+            Route::apiResource('users', UserController::class);
+            Route::patch('/users/{user}/status',
+                [UserController::class, 'updateStatus']
+            );
+
+            //Specialty
+            Route::apiResource('specialties', SpecialtyController::class);
+            
+            //Doctor
+            Route::apiResource('doctors', DoctorController::class);
+
+            //Patient
+            Route::apiResource('patients', PatientController::class);
+
+            //Appointment
+            Route::apiResource('appointments', AppointmentController::class);
+            Route::patch('/appointments/{appointment}/status',
+                [AppointmentController::class, 'updateStatus']
+            );
+
+            //Examination
+            Route::apiResource('examinations', ExaminationController::class);
+
+            //Medicine
+            Route::apiResource('medicines', MedicineController::class);
+            Route::patch('medicines/{medicine}/restore', 
+                [MedicineController::class, 'restore']);
+            Route::patch('medicines/{medicine}/forcedelete', 
+                [MedicineController::class, 'forceDelete']);
+                Route::patch('medicines/{medicine}/adjuststock', 
+                [MedicineController::class, 'adjustStock']);
+
+            Route::apiResource('prescriptions', PrescriptionController::class);
+            Route::post(
+                'prescriptions/{prescription}/items',
+                [PrescriptionController::class, 'addItem']
+            )->name('prescriptions.items.add');
+
+            Route::patch(
+                'prescriptions/{prescription}/items/{item}',
+                [PrescriptionController::class, 'updateItem']
+            )->name('prescriptions.items.update');
+
+            Route::delete(
+                'prescriptions/{prescription}/items/{item}',
+                [PrescriptionController::class, 'removeItem']
+            )->name('prescriptions.items.remove');
+
+            //...PAYMENT...
+            Route::post(
+                'invoices/{invoice}/payments',
+                [PaymentController::class, 'store']
+            );
+            Route::post(
+                'payments/{payment}/capture',
+                [PaymentController::class, 'capture']  
+            );
+    
+        });
+        
+    });
+
+}); 

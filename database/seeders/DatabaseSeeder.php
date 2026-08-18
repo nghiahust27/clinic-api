@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             RolePermissionSeeder::class,
             AdminUserSeeder::class,
+            DemoSeeder::class
         ]);
 
         $adminRole = Role::where('name', 'ADMIN')->firstOrFail();

@@ -579,7 +579,26 @@ admin@clinic.test
 ```bash
 docker compose exec app php artisan migrate:fresh --seed
 ```
+## T2.1 Patients
 
+Đã tạo bảng `patients` gồm:
+
+- code (unique)
+- full_name
+- gender
+- date_of_birth
+- phone
+- email (nullable)
+- address (nullable)
+- timestamps
+- soft delete
+
+Index phục vụ tìm kiếm:
+
+- phone
+- full_name
+
+`code` sử dụng unique index.
 
 ## 16. Useful Commands
 
@@ -654,3 +673,184 @@ Dừng container và xóa volume database:
 ```bash
 docker compose down -v
 ```
+## Kiến trúc đã chọn
+
+Project sử dụng kiến trúc Controller + Service (Kiến trúc B).
+
+### Lý do lựa chọn
+
+- Controller chịu trách nhiệm tiếp nhận HTTP request và trả HTTP response.
+- Form Request chịu trách nhiệm validate dữ liệu đầu vào.
+- Service chịu trách nhiệm xử lý business logic.
+- Model/Eloquent chịu trách nhiệm tương tác với database.
+- API Resource chịu trách nhiệm định dạng dữ liệu trả về API.
+- Không sử dụng Repository vì project sử dụng Eloquent trực tiếp và chưa có nhu cầu thay đổi tầng persistence.
+
+### Sơ đồ luồng request
+
+Client
+    ↓
+API Route
+    ↓
+Sanctum Authentication
+    ↓
+Permission Middleware
+    ↓
+Controller
+    ↓
+Form Request
+    ↓
+Service
+    ↓
+Eloquent Model
+    ↓
+Database
+
+Response:
+
+Database
+    ↓
+Model
+    ↓
+Service
+    ↓
+API Resource
+    ↓
+JSON Envelope
+    ↓
+Client
+
+## Appointment Rules
+
+### Appointment Status State Machine
+
+Appointment sử dụng state machine để kiểm soát việc chuyển trạng thái lịch khám.  
+Hệ thống chỉ cho phép các transition hợp lệ nhằm đảm bảo trạng thái lịch khám không bị thay đổi sai quy tắc.
+
+### Allowed Status Transitions
+
+Các trạng thái được phép chuyển đổi:
+scheduled → confirmed → completed
+
+scheduled → cancelled
+
+confirmed → cancelled
+
+### Status Description
+
+| Status | Description |
+|---|---|
+| scheduled | Lịch khám đã được tạo, đang chờ xác nhận |
+| confirmed | Lịch khám đã được xác nhận |
+| completed | Lịch khám đã hoàn thành |
+| cancelled | Lịch khám đã bị hủy |
+
+### Invalid Status Transition
+
+Các transition không nằm trong flow trên sẽ bị từ chối.
+
+Ví dụ:
+completed → confirmed
+completed → scheduled
+cancelled → scheduled
+cancelled → confirmed
+
+# PayPal Sandbox Setup & Testing
+
+Project sử dụng PayPal Sandbox để mô phỏng thanh toán online.
+Không sử dụng tiền thật trong quá trình phát triển và kiểm thử.
+
+## 1. Tạo tài khoản PayPal Developer
+
+Truy cập:
+
+https://developer.paypal.com/
+
+Đăng nhập bằng tài khoản PayPal hiện có hoặc tạo tài khoản Developer mới.
+
+PayPal Sandbox là môi trường độc lập dùng để mô phỏng giao dịch thật mà không sử dụng tiền thật.
+
+Sau khi đăng nhập Developer Dashboard, chuyển sang môi trường:
+
+**Sandbox**
+
+Tài liệu chính thức:
+
+https://developer.paypal.com/tools/sandbox/
+
+---
+
+## 2. Tạo Sandbox App
+
+Trong PayPal Developer Dashboard:
+
+1. Chọn **Apps & Credentials**.
+2. Chọn tab **Sandbox**.
+3. Chọn **Create App**.
+4. Đặt tên cho application, ví dụ:
+
+```text
+Clinic Management API
+```
+
+5. Tạo application.
+
+Sau khi tạo app, PayPal cung cấp:
+
+Client ID
+Client Secret
+
+Client ID dùng để xác định ứng dụng.
+
+Client Secret dùng để xác thực ứng dụng khi lấy OAuth access token.
+
+Không commit Client Secret vào Git.
+
+Tài liệu chính thức:
+
+## 3. Lấy Client ID và Client Secret
+
+Trong:
+
+Developer Dashboard
+    -> Apps & Credentials
+    -> Sandbox
+
+Chọn application vừa tạo.
+
+Copy:
+
+Client ID
+Client Secret
+
+Sau đó thêm vào file .env:
+
+PAYPAL_CLIENT_ID=your_sandbox_client_id
+PAYPAL_CLIENT_SECRET=your_sandbox_client_secret
+PAYPAL_MODE=sandbox
+
+Ví dụ:
+
+PAYPAL_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+PAYPAL_CLIENT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+PAYPAL_MODE=sandbox
+
+Không sử dụng credential của môi trường Live.
+
+## 4. Tạo Sandbox Accounts
+
+Sau khi đăng ký app xong, trở về trang Dashboard, tìm Sandbox Accounts:
+https://developer.paypal.com/dashboard/accounts
+
+Trong đó có chứa những Sandbox account có sẵn được cung cấp để test, hoặc bạn có thể tạo tài khoản mới bằng Create account.
+
+## 5.  Thẻ Visa test sandbox
+
+Trở về trang Dashboard, tìm Test creadit cards:
+https://developer.paypal.com/credit-card-number-generator#link-creditcardgeneratorfortesting
+
+Trong đó có chứa những thẻ ảo do PayPal Dev cung cấp để test. Bạn có thể kéo xuống dưới để tự tạo thẻ ảo cho mình
+
+## 6.CẢNH BÁO BẢO MẬT
+Hệ thống hiện chỉ hỗ trợ tích hợp ở môi trường **PayPal Sandbox**. 
+Tuyệt đối **KHÔNG** sử dụng API Credential của tài khoản PayPal Live (thật) trong môi trường phát triển và thử nghiệm.
