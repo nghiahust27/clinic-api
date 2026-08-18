@@ -3,6 +3,9 @@
 namespace App\Services;
 
 use App\Events\PrescriptionCreated;
+use App\Events\PrescriptionItemAdded;
+use App\Events\PrescriptionItemRemoved;
+use App\Events\PrescriptionItemUpdated;
 use App\Models\Examination;
 use App\Models\Medicine;
 use App\Models\Patient;
@@ -151,12 +154,16 @@ class PrescriptionService
             $data['quantity']
         );
 
-        return $prescription->items()->create([
+         $item = $prescription->items()->create([
             'medicine_id' => $data['medicine_id'],
             'quantity' => $data['quantity'],
             'dousage' => $data['dousage'],
             'usage_instruction' => $data['usage_instruction'],
         ]);
+
+        event(new PrescriptionItemAdded($item));
+
+        return $item->load('medicine');
             
 
     }
@@ -214,6 +221,11 @@ class PrescriptionService
                 'dousage' => $data['dousage'],
                 'usage_instruction' => $data['usage_instruction']
             ]);
+            event(new PrescriptionItemUpdated(
+                $item,
+                $oldQuantity,
+                $newQuantity
+            ));
             return $item->load('medicine');
         });  
     }
@@ -238,6 +250,8 @@ class PrescriptionService
                 'stock',
                 $item->quantity
             );
+
+            event(new PrescriptionItemRemoved($item));
 
             $item->delete();
         });

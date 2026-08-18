@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Examination\StoreExaminationRequest;
+use App\Http\Requests\Examination\UpdateExaminationRequest;
 use App\Models\Appointment;
 use App\Models\Examination;
 use App\Services\ExaminationService;
@@ -51,5 +52,23 @@ class ExaminationController extends Controller
             'appointment' => $appointment->id
         ])->with('success',
         'Examination created successfully');
+    }
+
+    public function edit(Examination $examination)
+    {
+        $examination ->load([
+            'appointment.patient',
+            'appointment.doctor'
+        ]);
+        return view('examinations.edit', compact('examination'));
+    }
+
+     public function update(UpdateExaminationRequest $request,
+      Examination $examination)
+    {
+        $this->service->update($examination,$request->validated());
+
+        return redirect()->route('examinations.show', $examination)
+        ->with('success', 'Examination updated successfully');
     }
 }

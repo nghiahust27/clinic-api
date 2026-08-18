@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\UserActivityLogged;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -52,7 +53,12 @@ class UserService
         $data['password'] = Hash::make($data['password']);
 
         $user = User::create($data);
-
+        event(new UserActivityLogged($user,'user.created',
+            [
+                'email' => $user->email,
+                'role_id' => $user->role_id,
+            ]
+        ));
         return $user->load('role');
     }
 
@@ -68,6 +74,13 @@ class UserService
 
         $user->update($data);
 
+        event(new UserActivityLogged($user,'user.updated',
+            [
+                'email' => $user->email,
+                'role_id' => $user->role_id,
+            ]
+        ));
+
         return $user->fresh('role');
     }
 
@@ -80,6 +93,11 @@ class UserService
         $user->update([
             'is_active' => false,
         ]);
+        event(new UserActivityLogged($user,'user.deactivated',
+            [
+                'email' => $user->email,
+            ]
+        ));
 
         return $user->fresh('role');
     }
@@ -92,17 +110,19 @@ class UserService
         $user->update([
             'is_active' => true,
         ]);
-        $user->save();
+        event(new UserActivityLogged($user,'user.activated',
+            [
+                'email' => $user->email,
+            ]
+        ));
 
         return $user->fresh('role');
     }
 
     public function updateStatus(User $user, bool $isActive): User
     {
-        if (
-            !$isActive &&
-            $user->role?->name === 'ADMIN'
-        ) {
+        if (!$isActive &&$user->role?->name === 'ADMIN') 
+        {
             $this->ensureNotLastActiveAdmin();
         }
 

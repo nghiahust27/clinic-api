@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Events\ExaminationCreated;
+use App\Events\ExaminationUpdated;
 use App\Models\Appointment;
 use App\Models\Examination;
 use Illuminate\Validation\ValidationException;
@@ -81,8 +82,17 @@ class ExaminationService
 
     public function update(Examination $examination, array $data)
     {
+        $oldDiagnosis = $examination->diagnosis;
+        $oldNote = $examination->note;
+
         $examination->update($data);
-        return $examination->fresh();
+        $examination->fresh();
+        $newDiagnosis = $examination->diagnosis;
+        $newNote = $examination->note;
+
+        event(new ExaminationUpdated($examination, $oldDiagnosis, 
+        $newDiagnosis, $oldNote, $newNote));
+        return $examination;
     }
 
 }

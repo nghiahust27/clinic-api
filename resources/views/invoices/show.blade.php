@@ -1303,16 +1303,18 @@
         </div>
     </div>
     {{-- FOOTER --}}
-    @if(isset($invoice->status) === 'unpaid')
-        <div>
-            <a
-                href="{{ route('payments.create', 
-                $invoice) }}"
-                class="invoice-btn invoice-btn-primary"
-            >
-                Create Payments
-            </a>
-        </div>
+    @if( auth()->user()->hasPermission('PAYMENTS.CREATE'))
+        @if($invoice->status === 'unpaid')
+            <div>
+                <a
+                    href="{{ route('payments.create', 
+                    $invoice) }}"
+                    class="invoice-btn invoice-btn-primary"
+                >
+                    Create Payments 
+                </a>
+            </div>
+        @endif
     @endif
     <div class="invoice-footer-actions">
         <a

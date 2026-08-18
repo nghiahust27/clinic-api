@@ -837,6 +837,18 @@
             >
                 ← Back
             </a>
+            @if(auth()->user()->hasPermission(
+                    'EXAMINATIONS.UPDATE'))
+                <a
+                    href="{{ route(
+                        'examinations.edit',
+                        ['examination' => $examination->id]
+                    ) }}"
+                    class="btn-primary"
+                >
+                    Edit
+                </a>
+            @endif
 
             @if(!isset($examination->prescription))
                 @if(auth()->user()->hasPermission(

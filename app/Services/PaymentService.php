@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Events\PaymentActivity;
+use App\Events\PaymentStatusUpdated;
 use App\Models\Invoice;
 use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
@@ -54,6 +56,11 @@ class PaymentService
             ]);
 
             $payment->approval_url = $approvalUrl;
+            event(new PaymentActivity($payment, 'payment.created',
+            [
+                'invoice_id'=>$payment->invoice_id,
+                'method'=>$payment->method
+            ]));
             return $payment;
         });
     }
@@ -73,10 +80,16 @@ class PaymentService
         $result = $this->paypalService->captureOrder($payment->provider_order_id);
 
         return DB::transaction(function () use ($payment, $result) {
+            $oldStatus = $payment->status;
             if (!$result['success']) {
                 $payment->update(['status' => 'failed']);
                 
                 $payment = $payment->fresh();
+                event(new PaymentActivity($payment, 'payment.failed',
+                [
+                    'invoice_id'=>$payment->invoice_id,
+                    'method'=>$payment->method
+                ]));
                 $payment->paypal_error = $result['response'];
 
                 return $payment;
@@ -87,8 +100,15 @@ class PaymentService
                 'provider_capture_id' => $result['capture_id'],
                 'paid_at' => now(),
             ]);
+            event(new PaymentActivity($payment, 'payment.completed',
+            [
+                'invoice_id'=>$payment->invoice_id,
+                'method'=>$payment->method
+            ]));
 
-            $invoice = Invoice::where('id', $payment->invoice_id)->lockForUpdate()->first();
+            $invoice = Invoice::where('id', $payment->invoice_id)
+            ->lockForUpdate()->first();
+
 
             if ($invoice) {
                 $completedAmount = $invoice->payments()

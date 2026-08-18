@@ -585,7 +585,6 @@
                                     <span class="status-badge status-active">
 
                                         <span class="status-dot"></span>
-
                                         Active
 
                                     </span>

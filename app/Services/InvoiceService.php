@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Events\InvoiceCreated;
+use App\Events\InvoiceUpdated;
 use App\Models\Examination;
 use App\Models\Invoice;
 use Illuminate\Support\Facades\DB;
@@ -85,27 +86,30 @@ class InvoiceService
     }
     public function update(array $data, Invoice $invoice)
     {
-        $discount = $data['discount'];
+        $oldDiscount = $invoice->discount;
+        $newDiscount = $data['discount'];
 
         if($invoice->status !=='unpaid')
         {
             abort(422, 'Only unpaid invoice can be updated');
         }
-        if ($discount < 0) {
+        if ($newDiscount < 0) {
             throw ValidationException::withMessages([
                 'discount' => ['Discount cannot be negative.'],
             ]);
         }
 
-        if ($discount > $invoice->subtotal) {
+        if ($newDiscount > $invoice->subtotal) {
             throw ValidationException::withMessages([
                 'discount' => ['Discount cannot exceed subtotal.'],
             ]);
         }
         $invoice->update([
-        'discount' => $discount,
-        'total' => $invoice->subtotal - $discount,
-    ]);
+        'discount' => $newDiscount,
+        'total' => $invoice->subtotal - $newDiscount,
+        ]);
+
+        event(new InvoiceUpdated($invoice, $oldDiscount, $newDiscount));
         return $invoice->fresh([
         'examination.appointment.patient',
         'examination.prescription.items.medicine',
