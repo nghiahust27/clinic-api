@@ -7,13 +7,15 @@ use App\Http\Requests\Payment\StorePaymentRequest;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Services\PaymentService;
+use App\Services\PayPalService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class PaymentController extends Controller
 {
     public function __construct(
-        private PaymentService $paymentService
+        private PaymentService $paymentService,
+        private PayPalService $paypalService
     ) {}
 
     public function index()
@@ -117,5 +119,27 @@ class PaymentController extends Controller
 
         return redirect()->route('invoices.index')
             ->with('warning', 'Payment process was cancelled.');
+    }
+
+    public function webhook(Request $request)
+    {
+       
+        $isValid = $this->paypalService->verifyWebhookSignature(
+            $request->headers->all(),
+            $request->getContent()
+        );
+
+        if (!$isValid) {
+            return response()->json(['message' => 'Invalid webhook signature'], 400);
+        }
+
+        try {
+            $eventData = $request->all();
+            $this->paymentService->handleWebhook($eventData);
+
+            return response()->json(['status' => 'success'], 200);
+        } catch (\Throwable $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
 }
