@@ -8,17 +8,17 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EnsurePermission
 {
-    public function handle(
-        Request $request,
-        Closure $next
-    ): Response {
+    public function handle(Request $request, Closure $next): Response 
+    {
       
+        if ($request->is('payments/paypal/*')) {
+            return $next($request);
+        }
+
         $user = $request->user();
 
         if (!$user) {
-            return response()->json([
-                'message' => 'Unauthenticated.'
-            ], 401);
+            return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
         $route = $request->route();
@@ -31,18 +31,18 @@ class EnsurePermission
         $controllerName = class_basename($controller);
 
         $controllerMap = [
-            'UserController' => 'USERS',
-            'RoleController' => 'ROLES',
-            'SpecialtyController' => 'SPECIALTIES',
-            'DoctorController' => 'DOCTORS',
-            'PatientController' => 'PATIENTS',
+            'UserController'        => 'USERS',
+            'RoleController'        => 'ROLES',
+            'SpecialtyController'   => 'SPECIALTIES',
+            'DoctorController'      => 'DOCTORS',
+            'PatientController'     => 'PATIENTS',
             'AppointmentController' => 'APPOINTMENTS',
             'ExaminationController' => 'EXAMINATIONS',
-            'MedicineController' => 'MEDICINES',
+            'MedicineController'    => 'MEDICINES',
             'PrescriptionController' => 'PRESCRIPTIONS',
-            'InvoiceController' => 'INVOICES',
-            'PaymentController' => 'PAYMENTS',
-            'StatsController' => 'STATS',
+            'InvoiceController'     => 'INVOICES',
+            'PaymentController'     => 'PAYMENTS',
+            'StatsController'       => 'STATS',
         ];
 
         if (!isset($controllerMap[$controllerName])) {
@@ -50,33 +50,35 @@ class EnsurePermission
         }
 
         $resource = $controllerMap[$controllerName];
-
-        $action = $route->getActionMethod();
+        $method   = $route->getActionMethod();
 
         $actionMap = [
-            'index' => 'FINDALL',
-            'store' => 'CREATE',
-            'show' => 'FINDONE',
-            'update' => 'UPDATE',
-            'destroy' => 'DELETE',
+            'index'        => 'FINDALL',
+            'create'       => 'CREATE',
+            'store'        => 'CREATE',
+            'show'         => 'FINDONE',
+            'edit'         => 'UPDATE',
+            'update'       => 'UPDATE',
+            'destroy'      => 'DELETE',
+            'showCardForm' => 'CREATE',
             'updateStatus' => 'UPDATESTATUS',
-            'addItem' => 'ADDITEM',
-            'updateItem' => 'UPDATEITEM',
-            'removeItem' => 'REMOVEITEM',
-            'capture' => 'CAPTURE',
-            'adjustStock' => 'ADJUSTSTOCK',
+            'addItem'      => 'ADDITEM',
+            'updateItem'   => 'UPDATEITEM',
+            'removeItem'   => 'REMOVEITEM',
+            'capture'      => 'CAPTURE',
+            'adjustStock'  => 'ADJUSTSTOCK',
         ];
 
-        if (!isset($actionMap[$action])) {
-            return $next($request);
+        if ($controllerName === 'StatsController' && $method === 'index') {
+            $action = 'SHOW';
+        } else {
+            $action = $actionMap[$method] ?? strtoupper($method);
         }
-        $permissionName =
-            $resource . '.' . $actionMap[$action];
+
+        $permissionName = $resource . '.' . $action;
 
         if (!$user->role) {
-            return response()->json([
-                'message' => 'User does not have a role.'
-            ], 403);
+            return response()->json(['message' => 'User does not have a role.'], 403);
         }
 
         $hasPermission = $user->role
@@ -85,10 +87,13 @@ class EnsurePermission
             ->exists();
 
         if (!$hasPermission) {
-            return response()->json([
-                'message' => 'Forbidden.',
-                'permission' => $permissionName,
-            ], 403);
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message'    => 'Forbidden.',
+                    'permission' => $permissionName,
+                ], 403);
+            }
+            abort(403);
         }
 
         return $next($request);

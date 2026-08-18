@@ -12,6 +12,7 @@ use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\InvoiceController;
 use App\Http\Controllers\Web\PaymentController;
 use App\Http\Controllers\Web\PrescriptionController;
+use App\Http\Controllers\Web\StatsController;
 use App\Models\Invoice;
 use Illuminate\Support\Facades\Route;
 
@@ -71,7 +72,7 @@ Route::middleware(['auth','permission'])->group(function(){
         '/medicines/{medicine}/adjust-stock',
         [MedicineController::class, 'adjustStock']
     )->name('medicines.adjust-stock.update');
-    Route::resource('medicines', MedicineController::class);
+
     Route::patch('/medicines/{medicine}/activate',[MedicineController::class, 
     'activate'])->name('medicines.activate');
     Route::patch('/medicines/{medicine}/deactivate',[MedicineController::class, 
@@ -141,6 +142,9 @@ Route::middleware(['auth','permission'])->group(function(){
     Route::get('payments/paypal/cancel', 
     [PaymentController::class, 'paypalCancel'])->name('payments.paypal.cancel');
     
+
+     Route::get('/stats', [StatsController::class, 'index'])
+        ->name('stats.index');
 });
 
 require __DIR__.'/auth.php';

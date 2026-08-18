@@ -392,7 +392,9 @@
 <div class="page-header">
 
     <div>
-
+        <h1>
+            Medicines
+        </h1>
         <div class="page-description">
             Manage medicine information and medical records.
         </div>

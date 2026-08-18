@@ -360,6 +360,9 @@
 <div class="page-header">
 
     <div>
+        <h1>
+            Doctors
+        </h1>
 
         <div class="page-description">
             Manage doctor information and medical records.

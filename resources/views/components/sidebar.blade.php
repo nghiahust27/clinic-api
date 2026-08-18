@@ -278,28 +278,22 @@
                 @endif
 
 
-                {{-- Roles --}}
 
-                @if(auth()->user()->hasPermission('ROLES.FINDALL'))
+                @if(auth()->user()->hasPermission('STATS.SHOW'))
 
                     <a
-                        
+                         href="{{ route('stats.index') }}"
+                    class="nav-item {{ request()
+                    ->routeIs('stats.*') ? 'active' : '' }}"
                     >
-
                         <span class="nav-icon">
                             ◈
                         </span>
-
-                        Roles
-
+                        Stats
                     </a>
-
                 @endif
-
             </div>
-
         @endif
-
 
     </nav>
 

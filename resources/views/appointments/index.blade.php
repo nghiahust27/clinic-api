@@ -945,13 +945,9 @@
                         >
                             View
                         </a>
-
                     @endif
-
                 </div>
-
             </div>
-
         @empty
 
 
@@ -987,12 +983,8 @@
 
             </div>
 
-
         @endforelse
-
-
     </div>
-
 
     <!-- ================= PAGINATION ================= -->
     @if(method_exists($appointments, 'links'))

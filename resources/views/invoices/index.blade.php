@@ -894,7 +894,7 @@
                 <!-- REASON -->
                 @if($invoice->total)
                     <div class="invoice-reason">
-                        Total: {{ $invoice->total }}
+                        Total: $ {{ $invoice->total }}
 
                     </div>
 
