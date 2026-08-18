@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('prescription_id')
             ->constrained('prescriptions')
-            ->cascadeOnDelete()->unique();
+            ->cascadeOnDelete();
             $table->foreignId('medicine_id')
             ->constrained('medicines')
             ->restrictOnDelete();
