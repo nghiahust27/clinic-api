@@ -7,7 +7,19 @@
 @section('content')
 
 <style>
+    .alert {
+        padding: 13px 16px;
+        margin-bottom: 20px;
 
+        border-radius: 8px;
+
+        background: #e9f8f5;
+        border: 1px solid #c8eee7;
+
+        color: #247d70;
+
+        font-size: 13px;
+    }
     .page-header {
         display: flex;
         align-items: center;
@@ -330,6 +342,127 @@
         border-top: 1px solid #edf4f4;
     }
 
+.pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 28px;
+    padding-bottom: 10px;
+}
+
+.pagination-wrapper nav {
+    display: flex;
+    align-items: center;
+}
+
+.pagination-wrapper nav > div:first-child {
+    display: none;
+}
+
+.pagination-wrapper nav > div:last-child {
+    display: flex;
+    align-items: center;
+}
+
+.pagination-wrapper nav ul {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+}
+
+.pagination-wrapper nav li {
+    margin: 0;
+    padding: 0;
+}
+
+
+/* PAGINATION BUTTON */
+
+.pagination-wrapper nav a,
+.pagination-wrapper nav span {
+    min-width: 36px;
+    height: 36px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 10px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+
+    background: #ffffff;
+    color: #4b5563;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition:
+        background .15s ease,
+        border-color .15s ease,
+        color .15s ease,
+        box-shadow .15s ease;
+}
+
+
+/* HOVER */
+
+.pagination-wrapper nav a:hover {
+    border-color: #bfdbfe;
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+
+/* ACTIVE PAGE */
+
+.pagination-wrapper nav span[aria-current="page"] {
+    border-color: #2563eb;
+    background: #2563eb;
+    color: #ffffff;
+
+    box-shadow: 0 2px 6px rgba(37, 99, 235, .18);
+}
+
+
+/* DISABLED */
+
+.pagination-wrapper nav span[aria-disabled="true"] {
+    background: #f9fafb;
+    color: #c4c9d0;
+    border-color: #edf0f2;
+
+    cursor: not-allowed;
+}
+
+
+/* ARROW */
+
+.pagination-wrapper nav a[rel="prev"],
+.pagination-wrapper nav a[rel="next"] {
+    font-size: 15px;
+}
+
+
+/* DOTS */
+
+.pagination-wrapper nav span:not([aria-current]):not([aria-disabled]) {
+    min-width: 30px;
+
+    border-color: transparent;
+    background: transparent;
+}
+
+
     /* ================= RESPONSIVE ================= */
 
     @media (max-width: 700px) {
@@ -384,11 +517,20 @@
 
         </a>
         
-
+    
     @endif
 
 
 </div>
+@if(session('success'))
+
+    <div class="alert">
+
+        {{ session('success') }}
+
+    </div>
+
+@endif
 
 
 
@@ -453,7 +595,7 @@
                                 <div class="doctor-info">
                                     <div class="doctor-avatar">
                                         {{ strtoupper(
-                                            substr($doctor->user->name, 6, 8)
+                                            substr($doctor->user->name, 0, 1)
                                         ) }}
                                     </div>
                                     <div>
@@ -481,9 +623,15 @@
 
         <!-- ================= PAGINATION ================= -->
 
-        @if(method_exists($doctors, 'links'))
-            <div class="pagination">
-                {{ $doctors->withQueryString()->links() }}
+         @if(method_exists($doctors, 'links'))
+
+            <div class="pagination-container">
+
+                <div class="pagination-wrapper">
+
+                    {{ $doctors->withQueryString()->links() }}
+
+                </div>
             </div>
         @endif
     @else

@@ -15,7 +15,7 @@ class SpecialtyService
     {
         
     }
-    public function getAll(int $perPage = 5)
+    public function getAll(int $perPage = 10)
     {
         return Specialty::latest()->paginate($perPage);
     }

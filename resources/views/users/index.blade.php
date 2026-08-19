@@ -363,12 +363,127 @@
         color: #9aa8b5;
     }
 
-    /* ================= PAGINATION ================= */
+     /* ================= PAGINATION ================= */
 
-    .pagination-wrapper {
-        padding: 18px 20px;
-        border-top: 1px solid #edf2f5;
-    }
+.pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 28px;
+    padding-bottom: 10px;
+}
+
+.pagination-wrapper nav {
+    display: flex;
+    align-items: center;
+}
+
+.pagination-wrapper nav > div:first-child {
+    display: none;
+}
+
+.pagination-wrapper nav > div:last-child {
+    display: flex;
+    align-items: center;
+}
+
+.pagination-wrapper nav ul {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+}
+
+.pagination-wrapper nav li {
+    margin: 0;
+    padding: 0;
+}
+
+
+/* PAGINATION BUTTON */
+
+.pagination-wrapper nav a,
+.pagination-wrapper nav span {
+    min-width: 36px;
+    height: 36px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 10px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+
+    background: #ffffff;
+    color: #4b5563;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition:
+        background .15s ease,
+        border-color .15s ease,
+        color .15s ease,
+        box-shadow .15s ease;
+}
+
+
+/* HOVER */
+
+.pagination-wrapper nav a:hover {
+    border-color: #bfdbfe;
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+
+/* ACTIVE PAGE */
+
+.pagination-wrapper nav span[aria-current="page"] {
+    border-color: #2563eb;
+    background: #2563eb;
+    color: #ffffff;
+
+    box-shadow: 0 2px 6px rgba(37, 99, 235, .18);
+}
+
+
+/* DISABLED */
+
+.pagination-wrapper nav span[aria-disabled="true"] {
+    background: #f9fafb;
+    color: #c4c9d0;
+    border-color: #edf0f2;
+
+    cursor: not-allowed;
+}
+
+
+/* ARROW */
+
+.pagination-wrapper nav a[rel="prev"],
+.pagination-wrapper nav a[rel="next"] {
+    font-size: 15px;
+}
+
+
+/* DOTS */
+
+.pagination-wrapper nav span:not([aria-current]):not([aria-disabled]) {
+    min-width: 30px;
+
+    border-color: transparent;
+    background: transparent;
+}
 
     /* ================= RESPONSIVE ================= */
 
@@ -650,7 +765,7 @@
                                         @else
                                             <form
                                                 method="POST"
-                                                action="{{ route('users.activate', $user) }}"
+                                                action="{{ route('users.updateStatus', $user) }}"
                                             >
 
                                                 @csrf
@@ -713,13 +828,18 @@
         </div>
 
 
-        <!-- PAGINATION -->
+       <!-- ================= PAGINATION ================= -->
 
         @if(method_exists($users, 'links'))
 
-            <div class="pagination-wrapper">
+            <div class="pagination-container">
 
-                {{ $users->links() }}
+
+                <div class="pagination-wrapper">
+
+                    {{ $users->withQueryString()->links() }}
+
+                </div>
 
             </div>
 

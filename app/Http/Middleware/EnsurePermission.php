@@ -31,18 +31,18 @@ class EnsurePermission
         $controllerName = class_basename($controller);
 
         $controllerMap = [
-            'UserController'        => 'USERS',
-            'RoleController'        => 'ROLES',
-            'SpecialtyController'   => 'SPECIALTIES',
-            'DoctorController'      => 'DOCTORS',
-            'PatientController'     => 'PATIENTS',
+            'UserController' => 'USERS',
+            'RoleController' => 'ROLES',
+            'SpecialtyController' => 'SPECIALTIES',
+            'DoctorController' => 'DOCTORS',
+            'PatientController' => 'PATIENTS',
             'AppointmentController' => 'APPOINTMENTS',
             'ExaminationController' => 'EXAMINATIONS',
-            'MedicineController'    => 'MEDICINES',
+            'MedicineController' => 'MEDICINES',
             'PrescriptionController' => 'PRESCRIPTIONS',
-            'InvoiceController'     => 'INVOICES',
-            'PaymentController'     => 'PAYMENTS',
-            'StatsController'       => 'STATS',
+            'InvoiceController' => 'INVOICES',
+            'PaymentController' => 'PAYMENTS',
+            'StatsController' => 'STATS',
         ];
 
         if (!isset($controllerMap[$controllerName])) {
@@ -53,20 +53,21 @@ class EnsurePermission
         $method   = $route->getActionMethod();
 
         $actionMap = [
-            'index'        => 'FINDALL',
-            'create'       => 'CREATE',
-            'store'        => 'CREATE',
-            'show'         => 'FINDONE',
-            'edit'         => 'UPDATE',
-            'update'       => 'UPDATE',
-            'destroy'      => 'DELETE',
+            'index' => 'FINDALL',
+            'create' => 'CREATE',
+            'store' => 'CREATE',
+            'show' => 'FINDONE',
+            'edit' => 'UPDATE',
+            'update' => 'UPDATE',
+            'destroy'  => 'DELETE',
             'showCardForm' => 'CREATE',
             'updateStatus' => 'UPDATESTATUS',
-            'addItem'      => 'ADDITEM',
-            'updateItem'   => 'UPDATEITEM',
-            'removeItem'   => 'REMOVEITEM',
-            'capture'      => 'CAPTURE',
-            'adjustStock'  => 'ADJUSTSTOCK',
+            'addItem'=> 'ADDITEM',
+            'updateItem' => 'UPDATEITEM',
+            'removeItem' => 'REMOVEITEM',
+            'capture' => 'CAPTURE',
+            'adjustStock' => 'ADJUSTSTOCK',
+            'adjustStockForm' => 'ADJUSTSTOCK',
         ];
 
         if ($controllerName === 'StatsController' && $method === 'index') {

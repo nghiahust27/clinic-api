@@ -22,7 +22,7 @@ class PaymentController extends Controller
     {
         $payments = Payment::with('invoice')
             ->latest()
-            ->paginate(15);
+            ->paginate(10);
 
         return view('payments.index', compact('payments'));
     }

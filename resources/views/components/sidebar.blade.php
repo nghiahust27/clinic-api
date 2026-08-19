@@ -102,6 +102,23 @@
 
             @endif
 
+            @if(auth()->user()->hasPermission('SPECIALTIES.FINDALL'))
+
+                <a
+                    href="{{ route('specialties.index') }}"
+                    class="nav-item {{ request()->routeIs('specialties.*') ? 'active' : '' }}"
+                >
+
+                    <span class="nav-icon">
+                        ✚
+                    </span>
+
+                    Specialties
+
+                </a>
+
+            @endif
+
 
             {{-- Doctors --}}
 

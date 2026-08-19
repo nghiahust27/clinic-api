@@ -18,7 +18,7 @@ class MedicineService
                 $sub->where('name', 'LIKE', "%$q%")
                 ->orWhere('code', 'LIKE', "%$q%");
             });
-        })->latest()->paginate(10);
+        })->latest()->paginate(8);
     }
 
     public function create(array $data)
@@ -49,7 +49,6 @@ class MedicineService
         $medicine->update(['stock' => $newStock]);
         event(new StockAdjusted(
             $medicine,
-            $data['quantity'],
             $oldStock,
             $newStock
         ));

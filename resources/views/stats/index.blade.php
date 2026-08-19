@@ -24,21 +24,11 @@
                 <div class="stats-icon stats-icon-patient">
                     <i class="bi bi-people-fill"></i>
                 </div>
-
-                <span class="stats-label">
-                    Patients
-                </span>
+                <span class="stats-label">Patients</span>
             </div>
-
-            <div class="stats-value">
-                {{ number_format($stats['patients']) }}
-            </div>
-
-            <div class="stats-description">
-                Total registered patients
-            </div>
+            <div class="stats-value">{{ number_format($stats['patients']) }}</div>
+            <div class="stats-description">Total registered patients</div>
         </div>
-
 
         {{-- Today's Appointments --}}
         <div class="stats-card">
@@ -46,21 +36,11 @@
                 <div class="stats-icon stats-icon-appointment">
                     <i class="bi bi-calendar-check-fill"></i>
                 </div>
-
-                <span class="stats-label">
-                    Today's Appointments
-                </span>
+                <span class="stats-label">Today's Appointments</span>
             </div>
-
-            <div class="stats-value">
-                {{ number_format($stats['today_appointments']) }}
-            </div>
-
-            <div class="stats-description">
-                Appointments scheduled today
-            </div>
+            <div class="stats-value">{{ number_format($stats['today_appointments']) }}</div>
+            <div class="stats-description">Appointments scheduled today</div>
         </div>
-
 
         {{-- Monthly Revenue --}}
         <div class="stats-card">
@@ -68,22 +48,17 @@
                 <div class="stats-icon stats-icon-revenue">
                     <i class="bi bi-cash-stack"></i>
                 </div>
-
-                <span class="stats-label">
-                    Monthly Revenue
-                </span>
+                <span class="stats-label">Monthly Revenue</span>
             </div>
-
-            <div class="stats-value stats-revenue">
-                $ {{ number_format($stats['monthly_revenue']) }}
-                
+            <div class="stats-value stats-revenue" 
+                id="revenue-counter" 
+                data-target="{{ $stats['monthly_revenue'] ?? 0 }}">
+                $ 0
             </div>
-
             <div class="stats-description">
                 Revenue from completed payments
             </div>
         </div>
-
 
         {{-- Low Stock --}}
         <div class="stats-card">
@@ -91,103 +66,59 @@
                 <div class="stats-icon stats-icon-stock">
                     <i class="bi bi-capsule"></i>
                 </div>
-
-                <span class="stats-label">
-                    Low Stock
-                </span>
+                <span class="stats-label">Low Stock</span>
             </div>
-
-            <div class="stats-value">
-                {{ number_format($stats['low_stock_medicines']) }}
-            </div>
-
-            <div class="stats-description">
-                Medicines that need restocking
-            </div>
+            <div class="stats-value">{{ number_format($stats['low_stock_medicines']) }}</div>
+            <div class="stats-description">Medicines that need restocking</div>
         </div>
 
     </div>
 
 
-    {{-- Quick Overview --}}
-    <div class="stats-section">
+    {{-- Analytics & Low Stock Section --}}
+    <div class="dashboard-analytics-grid">
 
-        <div class="stats-section-header">
-            <div>
-                <h2>Quick Overview</h2>
-                <p>Current clinic status</p>
+        {{-- Left: Revenue Chart --}}
+        <div class="stats-section">
+            <div class="stats-section-header">
+                <div>
+                    <h2>Revenue Overview</h2>
+                    <p>Monthly revenue performance for current year</p>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="revenueChart"></canvas>
             </div>
         </div>
 
-        <div class="overview-list">
-
-            <div class="overview-item">
-                <div class="overview-left">
-                    <div class="overview-icon">
-                        <i class="bi bi-person-check-fill"></i>
-                    </div>
-
-                    <div>
-                        <strong>Patient Management</strong>
-                        <span>
-                            {{ number_format($stats['patients']) }}
-                            registered patients
-                        </span>
-                    </div>
+        {{-- Right: Low Stock Medicines List --}}
+        <div class="stats-section">
+            <div class="stats-section-header">
+                <div>
+                    <h2>Low Stock Alert</h2>
+                    <p>Medicines near or below threshold limit</p>
                 </div>
+                <a href="{{ route('medicines.index') }}" class="btn-link">View All</a>
             </div>
 
-
-            <div class="overview-item">
-                <div class="overview-left">
-                    <div class="overview-icon">
-                        <i class="bi bi-calendar2-check-fill"></i>
+            <div class="stock-list-container">
+                @forelse($lowStockMedicines ?? [] as $medicine)
+                    <div class="stock-item">
+                        <div class="stock-info">
+                            <strong class="stock-name">{{ $medicine->name }}</strong>
+                            <span class="stock-unit">{{ $medicine->unit ?? 'Unit' }}</span>
+                        </div>
+                        <div class="stock-badge">
+                            <span class="badge-stock-qty">{{ $medicine->stock }} left</span>
+                        </div>
                     </div>
-
-                    <div>
-                        <strong>Today's Schedule</strong>
-                        <span>
-                            {{ number_format($stats['today_appointments']) }}
-                            appointments today
-                        </span>
+                @empty
+                    <div class="empty-stock-state">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <p>All medicine stocks are sufficient!</p>
                     </div>
-                </div>
+                @endforelse
             </div>
-
-
-            <div class="overview-item">
-                <div class="overview-left">
-                    <div class="overview-icon">
-                        <i class="bi bi-box-seam-fill"></i>
-                    </div>
-
-                    <div>
-                        <strong>Medicine Inventory</strong>
-                        <span>
-                            {{ number_format($stats['low_stock_medicines']) }}
-                            medicines running low
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="overview-item">
-                <div class="overview-left">
-                    <div class="overview-icon">
-                        <i class="bi bi-wallet2"></i>
-                    </div>
-
-                    <div>
-                        <strong>Monthly Revenue</strong>
-                        <span>
-                            $ {{ number_format($stats['monthly_revenue']) }}
-                            this month
-                        </span>
-                    </div>
-                </div>
-            </div>
-
         </div>
 
     </div>
@@ -195,13 +126,107 @@
 </div>
 
 
+{{-- Include Chart.js CDN --}}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const counterEl = document.getElementById('revenue-counter');
+        if (counterEl) {
+            const targetValue = parseFloat(counterEl.getAttribute('data-target')) || 0;
+            const duration = 1500; 
+            const frameDuration = 1000 / 60; 
+            const totalFrames = Math.round(duration / frameDuration);
+            let frame = 0;
+
+            const counter = setInterval(() => {
+                frame++;
+              
+                const progress = 1 - Math.pow(1 - (frame / totalFrames), 4);
+                const currentNumber = Math.floor(targetValue * progress);
+
+                counterEl.innerHTML = '$ ' + currentNumber.toLocaleString();
+
+                if (frame >= totalFrames) {
+                    counterEl.innerHTML = '$ ' + targetValue.toLocaleString();
+                    clearInterval(counter);
+                }
+            }, frameDuration);
+        }
+
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        
+        const revenueData = {!! json_encode($monthlyRevenueChart ?? array_fill(0, 12, 0)) !!};
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Revenue ($)',
+                    data: revenueData,
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37, 99, 235, 0.08)',
+                    borderWidth: 2.5,
+                    fill: true,
+                    tension: 0.35,
+                    pointBackgroundColor: '#2563eb',
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+             
+                animation: {
+                    duration: 1500,        
+                    easing: 'easeOutQuart', 
+                },
+                animations: {
+                    y: {
+                        from: 0
+                    }
+                },
+
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return ' Revenue: $' + context.raw.toLocaleString();
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#f3f4f6' },
+                        ticks: {
+                            callback: function(value) { return '$' + value; },
+                            color: '#9ca3af',
+                            font: { size: 11 }
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#9ca3af', font: { size: 11 } }
+                    }
+                }
+            }
+        });
+    });
+</script>
+
 <style>
     .stats-page {
         padding: 10px 5px 40px;
     }
 
     /* Header */
-
     .stats-header {
         display: flex;
         justify-content: space-between;
@@ -232,9 +257,7 @@
         font-weight: 500;
     }
 
-
-    /* Cards */
-
+    /* Cards Grid */
     .stats-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -272,25 +295,10 @@
         font-size: 20px;
     }
 
-    .stats-icon-patient {
-        background: #eaf2ff;
-        color: #2563eb;
-    }
-
-    .stats-icon-appointment {
-        background: #ecfdf5;
-        color: #059669;
-    }
-
-    .stats-icon-revenue {
-        background: #fff7ed;
-        color: #ea580c;
-    }
-
-    .stats-icon-stock {
-        background: #fef2f2;
-        color: #dc2626;
-    }
+    .stats-icon-patient { background: #eaf2ff; color: #2563eb; }
+    .stats-icon-appointment { background: #ecfdf5; color: #059669; }
+    .stats-icon-revenue { background: #fff7ed; color: #ea580c; }
+    .stats-icon-stock { background: #fef2f2; color: #dc2626; }
 
     .stats-label {
         font-size: 14px;
@@ -306,39 +314,37 @@
         margin-bottom: 8px;
     }
 
-    .stats-revenue {
-        font-size: 25px;
+    .stats-revenue { font-size: 25px; }
+    .stats-description { font-size: 13px; color: #9ca3af; }
+
+    /* Dashboard Analytics 2-Column Grid */
+    .dashboard-analytics-grid {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr;
+        gap: 20px;
+        margin-top: 28px;
     }
-
-    .stats-revenue span {
-        font-size: 16px;
-        font-weight: 600;
-    }
-
-    .stats-description {
-        font-size: 13px;
-        color: #9ca3af;
-    }
-
-
-    /* Overview */
 
     .stats-section {
-        margin-top: 28px;
         background: #ffffff;
         border: 1px solid #e8ebef;
         border-radius: 16px;
         box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+        display: flex;
+        flex-direction: column;
     }
 
     .stats-section-header {
-        padding: 22px 24px;
+        padding: 20px 24px;
         border-bottom: 1px solid #eef0f2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .stats-section-header h2 {
-        margin: 0 0 5px;
-        font-size: 19px;
+        margin: 0 0 4px;
+        font-size: 18px;
         font-weight: 650;
         color: #1f2937;
     }
@@ -349,61 +355,90 @@
         color: #9ca3af;
     }
 
-    .overview-list {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
+    .btn-link {
+        color: #2563eb;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
     }
 
-    .overview-item {
-        padding: 20px 24px;
-        border-bottom: 1px solid #f0f1f3;
+    .btn-link:hover {
+        text-decoration: underline;
     }
 
-    .overview-item:nth-child(odd) {
-        border-right: 1px solid #f0f1f3;
+    /* Chart Box */
+    .chart-container {
+        padding: 20px 24px 24px;
+        height: 320px;
+        position: relative;
     }
 
-    .overview-item:nth-last-child(-n+2) {
+    /* Low Stock List */
+    .stock-list-container {
+        padding: 12px 24px;
+        max-height: 320px;
+        overflow-y: auto;
+    }
+
+    .stock-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .stock-item:last-child {
         border-bottom: none;
     }
 
-    .overview-left {
+    .stock-info {
         display: flex;
-        align-items: center;
-        gap: 15px;
+        flex-direction: column;
     }
 
-    .overview-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
-        background: #f3f6fa;
-        color: #4b5563;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .overview-left strong {
-        display: block;
-        color: #374151;
+    .stock-name {
         font-size: 14px;
-        margin-bottom: 4px;
+        color: #1f2937;
+        font-weight: 600;
     }
 
-    .overview-left span {
-        display: block;
+    .stock-unit {
+        font-size: 12px;
         color: #9ca3af;
-        font-size: 13px;
+        margin-top: 2px;
     }
 
+    .badge-stock-qty {
+        background: #fef2f2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 20px;
+    }
+
+    .empty-stock-state {
+        padding: 40px 20px;
+        text-align: center;
+        color: #10b981;
+    }
+
+    .empty-stock-state i {
+        font-size: 32px;
+    }
+
+    .empty-stock-state p {
+        margin-top: 8px;
+        font-size: 14px;
+        color: #6b7280;
+    }
 
     /* Responsive */
-
     @media (max-width: 1100px) {
-        .stats-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
+        .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        .dashboard-analytics-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 700px) {
@@ -413,25 +448,7 @@
             flex-direction: column;
         }
 
-        .stats-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .overview-list {
-            grid-template-columns: 1fr;
-        }
-
-        .overview-item:nth-child(odd) {
-            border-right: none;
-        }
-
-        .overview-item {
-            border-bottom: 1px solid #f0f1f3 !important;
-        }
-
-        .overview-item:last-child {
-            border-bottom: none !important;
-        }
+        .stats-grid { grid-template-columns: 1fr; }
     }
 </style>
 @endsection

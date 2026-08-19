@@ -19,7 +19,6 @@ class LogStockAdjusted
             'medicine.stock_adjusted',
             $event->medicine,
             [
-                'quantity' => $event->quantity,
                 'old_stock' => $event->oldStock,
                 'new_stock' => $event->newStock,
             ]

@@ -101,7 +101,7 @@ class UserService
 
         return $user->fresh('role');
     }
-    public function activate(User $user): User
+    public function updateStatus(User $user): User
     {
         if ($user->role?->name === 'ADMIN') {
             $this->ensureNotLastActiveAdmin();
@@ -119,19 +119,5 @@ class UserService
         return $user->fresh('role');
     }
 
-    public function updateStatus(User $user, bool $isActive): User
-    {
-        if (!$isActive &&$user->role?->name === 'ADMIN') 
-        {
-            $this->ensureNotLastActiveAdmin();
-        }
 
-        $user->update([
-            'is_active' => $isActive,
-        ]);
-
-        return $user->fresh('role');
-    }
-
-    
 }
