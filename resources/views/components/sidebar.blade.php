@@ -102,6 +102,23 @@
 
             @endif
 
+            @if(auth()->user()->hasPermission('SPECIALTIES.FINDALL'))
+
+                <a
+                    href="{{ route('specialties.index') }}"
+                    class="nav-item {{ request()->routeIs('specialties.*') ? 'active' : '' }}"
+                >
+
+                    <span class="nav-icon">
+                        ✚
+                    </span>
+
+                    Specialties
+
+                </a>
+
+            @endif
+
 
             {{-- Doctors --}}
 
@@ -278,28 +295,22 @@
                 @endif
 
 
-                {{-- Roles --}}
 
-                @if(auth()->user()->hasPermission('ROLES.FINDALL'))
+                @if(auth()->user()->hasPermission('STATS.SHOW'))
 
                     <a
-                        
+                         href="{{ route('stats.index') }}"
+                    class="nav-item {{ request()
+                    ->routeIs('stats.*') ? 'active' : '' }}"
                     >
-
                         <span class="nav-icon">
                             ◈
                         </span>
-
-                        Roles
-
+                        Stats
                     </a>
-
                 @endif
-
             </div>
-
         @endif
-
 
     </nav>
 

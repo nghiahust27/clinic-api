@@ -51,7 +51,6 @@
         background: white;
 
         border: 1px solid #e3edf4;
-
         border-radius: 12px;
 
         padding: 20px;
@@ -110,6 +109,28 @@
         font-size: 10px;
 
         margin-top: 5px;
+    }
+    .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+  
+        height: 28px;
+        width: 30px;
+        
+        background: #13adb5;
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+
+        font-size: 14px;
+        font-weight: 600;
+
+        transition: 0.2s;
+    }
+
+    .btn-primary:hover {
+        background: #0d969d;
     }
 
     .stat-icon {
@@ -338,22 +359,14 @@
 
     .quick-action {
         display: flex;
-
         align-items: center;
-
         gap: 12px;
-
         padding: 12px;
-
         border:
             1px solid #e7eef3;
-
         border-radius: 9px;
-
         margin-bottom: 10px;
-
         color: #334155;
-
         transition:
             background 0.2s ease,
             border-color 0.2s ease;
@@ -798,9 +811,12 @@
 
                 @if(auth()->user()->hasPermission('PATIENTS.CREATE'))
 
-                        <div class="quick-icon">
-                            +
-                        </div>
+                        <a
+                            href="{{ route('patients.create') }}"
+                            class="btn-primary"
+                        >
+                            <span>+</span>
+                        </a>
 
                         <div class="quick-text">
                             <div class="quick-title">
@@ -818,79 +834,45 @@
                     </a>
                 @endif
 
-                {{-- Create Appointment --}}
+                {{-- Add Doctor --}}
 
-                @if(auth()->user()->hasPermission('APPOINTMENTS.CREATE'))
+                @if(auth()->user()->hasPermission('DOCTORS.CREATE'))
 
-
-                        <div class="quick-icon">
-                            +
-                        </div>
-
+                        <a
+                            href="{{ route('doctors.create') }}"
+                            class="btn-primary"
+                        >
+                            <span>+</span>
+                        </a>
 
                         <div class="quick-text">
-
                             <div class="quick-title">
-                                New Appointment
+                                Add doctor
                             </div>
-
                             <div class="quick-description">
-                                Schedule a patient visit
+                                Register a new doctor
                             </div>
-
                         </div>
-
 
                         <div class="quick-arrow">
                             →
                         </div>
 
                     </a>
-
                 @endif
 
-
-                {{-- Examination --}}
-
-                @if(auth()->user()->hasPermission('EXAMINATIONS.CREATE'))
-
-
-                        <div class="quick-icon">
-                            +
-                        </div>
-
-
-                        <div class="quick-text">
-
-                            <div class="quick-title">
-                                Start Examination
-                            </div>
-
-                            <div class="quick-description">
-                                Begin a patient examination
-                            </div>
-
-                        </div>
-
-
-                        <div class="quick-arrow">
-                            →
-                        </div>
-
-                    </a>
-
-                @endif
-
-
+               
                 {{-- Medicine --}}
 
                 @if(auth()->user()->hasPermission('MEDICINES.CREATE'))
 
 
-                        <div class="quick-icon">
-                            +
-                        </div>
-
+                       <a
+                            href="{{ route('medicines.create') }}"
+                            class="btn-primary"
+                        >
+                            <span>+</span>
+                        </a>
 
                         <div class="quick-text">
 
@@ -903,7 +885,6 @@
                             </div>
 
                         </div>
-
 
                         <div class="quick-arrow">
                             →
@@ -919,11 +900,12 @@
 
                 @if(auth()->user()->hasPermission('USERS.CREATE'))
 
-
-                        <div class="quick-icon">
-                            +
-                        </div>
-
+                        <a
+                            href="{{ route('users.create') }}"
+                            class="btn-primary"
+                        >
+                            <span>+</span>
+                        </a>
 
                         <div class="quick-text">
 

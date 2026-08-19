@@ -12,6 +12,8 @@ use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\InvoiceController;
 use App\Http\Controllers\Web\PaymentController;
 use App\Http\Controllers\Web\PrescriptionController;
+use App\Http\Controllers\Web\SpecialtyController;
+use App\Http\Controllers\Web\StatsController;
 use App\Models\Invoice;
 use Illuminate\Support\Facades\Route;
 
@@ -70,8 +72,8 @@ Route::middleware(['auth','permission'])->group(function(){
     Route::patch(
         '/medicines/{medicine}/adjust-stock',
         [MedicineController::class, 'adjustStock']
-    )->name('medicines.adjust-stock.update');
-    Route::resource('medicines', MedicineController::class);
+    )->name('medicines.adjustStock.update');
+
     Route::patch('/medicines/{medicine}/activate',[MedicineController::class, 
     'activate'])->name('medicines.activate');
     Route::patch('/medicines/{medicine}/deactivate',[MedicineController::class, 
@@ -81,9 +83,7 @@ Route::middleware(['auth','permission'])->group(function(){
     Route::resource('users', UserController::class);
     Route::patch('/users/{user}/status',[UserController::class, 
     'updateStatus'])->name('users.updateStatus');
-    Route::patch('/users/{user}/activate',[UserController::class, 
-    'activate'])->name('users.activate');
-
+  
     //...PRESCRIPTION
     Route::resource('prescriptions', PrescriptionController::class);
 
@@ -141,6 +141,12 @@ Route::middleware(['auth','permission'])->group(function(){
     Route::get('payments/paypal/cancel', 
     [PaymentController::class, 'paypalCancel'])->name('payments.paypal.cancel');
     
+
+     Route::get('/stats', [StatsController::class, 'index'])
+        ->name('stats.index');
+
+    // SPECIALTY
+    Route::resource('/specialties', SpecialtyController::class);
 });
 
 require __DIR__.'/auth.php';

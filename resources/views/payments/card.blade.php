@@ -5,37 +5,61 @@
 @section('content')
 <style>
 .card-payment-page {
-    max-width: 650px;
+    max-width: 600px;
     margin: 0 auto;
 }
 
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.5px;
+}
+
+.page-header p {
+    margin: 4px 0 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
 .card-payment-container {
-    background: #fff;
+    background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
 }
 
 .card-payment-container .card-header {
-    padding: 20px 25px;
+    padding: 20px 24px;
+    background: #f8fafc;
     border-bottom: 1px solid #f1f5f9;
 }
 
 .card-payment-container .card-header h2 {
     margin: 0;
-    color: #172033;
-    font-size: 18px;
+    color: #1e293b;
+    font-size: 16px;
     font-weight: 700;
 }
 
 .card-payment-container .card-header p {
     margin: 4px 0 0;
     color: #64748b;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .card-payment-container .card-body {
-    padding: 25px;
+    padding: 24px;
 }
 
 .payment-meta-box {
@@ -43,24 +67,24 @@
     justify-content: space-between;
     align-items: center;
     padding: 14px 18px;
-    background: #f8fbff;
-    border: 1px solid #bfdbfe;
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
     border-radius: 10px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 .payment-meta-box span {
-    color: #64748b;
+    color: #0369a1;
     font-size: 13px;
+    font-weight: 600;
 }
 
 .payment-meta-box strong {
-    color: #2563eb;
-    font-size: 18px;
-    font-weight: 750;
+    color: #0284c7;
+    font-size: 20px;
+    font-weight: 800;
 }
 
-/* CARD FORM FIELD STYLES */
 .form-group {
     margin-bottom: 18px;
 }
@@ -75,35 +99,104 @@
     letter-spacing: .03em;
 }
 
+/* Sửa lại CSS cho khung chứa field */
 .card-field-container {
-    height: 42px;
+    width: 100%;
+    min-height: 44px;
+    height: auto;
     padding: 8px 12px;
     border: 1px solid #cbd5e1;
     border-radius: 8px;
-    background: #fff;
-    transition: border-color .15s ease;
+    background: #ffffff;
+    box-sizing: border-box; /* Bắt buộc để padding không đẩy chiều rộng ra ngoài */
+    transition: all .15s ease;
+    display: flex;
+    align-items: center;
+}
+
+/* Đảm bảo iframe do PayPal sinh ra luôn khống chế theo kích thước khung mẹ */
+.card-field-container iframe {
+    width: 100% !important;
+    min-width: 100% !important;
+    border: none !important;
+    box-sizing: border-box !important;
 }
 
 .card-field-container:focus-within {
     border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
-
 .form-row-2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    gap: 16px;
 }
 
 #card-errors {
-    margin-bottom: 15px;
+    margin-bottom: 18px;
+    display: none;
 }
 
-.payment-actions {
-    display: flex;
+#card-errors .alert-danger {
+    padding: 12px 16px;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    color: #991b1b;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.btn {
+    min-height: 42px;
+    display: inline-flex;
     align-items: center;
-    justify-content: space-between;
-    margin-top: 25px;
+    justify-content: center;
+    padding: 0 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all .15s ease;
+    width: 100%;
+}
+
+.btn-primary {
+    border: 1px solid #2563eb;
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.btn-primary:hover:not(:disabled) {
+    border-color: #1d4ed8;
+    background: #1d4ed8;
+}
+
+.btn-primary:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    width: auto;
+    min-height: 36px;
+    padding: 0 14px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #475569;
+    font-size: 13px;
+}
+
+.btn-secondary:hover {
+    background: #f8fafc;
+    color: #1e293b;
+}
+
+@media (max-width: 576px) {
+    .form-row-2 {
+        grid-template-columns: 1fr;
+    }
 }
 </style>
 
@@ -115,7 +208,7 @@
             <p>Complete your payment using Visa/Mastercard</p>
         </div>
         <div>
-            <a href="{{ route('payments.create', $payment->invoice_id) }}" class="invoice-btn invoice-btn-secondary">
+            <a href="{{ route('payments.create', $payment->invoice_id) }}" class="btn btn-secondary">
                 ← Back
             </a>
         </div>
@@ -154,12 +247,8 @@
                     </div>
                 </div>
 
-                <div class="payment-actions">
-                    <a href="{{ route('payments.create', $payment->invoice_id) }}" class="invoice-btn invoice-btn-secondary">
-                        Cancel
-                    </a>
-
-                    <button type="submit" id="submit-button" class="invoice-btn invoice-btn-primary">
+                <div class="form-group" style="margin-top: 10px; margin-bottom: 0;">
+                    <button type="submit" id="submit-button" class="btn btn-primary">
                         Pay ${{ number_format($payment->amount, 2, '.', ',') }}
                     </button>
                 </div>
@@ -175,9 +264,17 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        if (!paypal.CardFields) {
-            console.error('PayPal CardFields failed to load');
+        const errorBox = document.getElementById('card-errors');
+        const submitBtn = document.getElementById('submit-button');
+
+        if (!window.paypal || !paypal.CardFields) {
+            showError('PayPal SDK failed to load. Please refresh the page.');
             return;
+        }
+
+        function showError(msg) {
+            errorBox.style.display = 'block';
+            errorBox.innerHTML = `<div class="alert alert-danger">${msg}</div>`;
         }
 
         const cardFields = paypal.CardFields({
@@ -185,15 +282,15 @@
                 return "{{ $payment->provider_order_id }}";
             },
             onApprove: function (data) {
-                document.getElementById('submit-button').innerText = 'Processing...';
-                document.getElementById('submit-button').disabled = true;
+                submitBtn.innerText = 'Processing Payment...';
+                submitBtn.disabled = true;
 
-                // Redirect to success route after approval
                 window.location.href = "{{ route('payments.paypal.success') }}?token=" + data.orderID;
             },
             onError: function (err) {
-                const errorBox = document.getElementById('card-errors');
-                errorBox.innerHTML = `<div class="alert alert-danger">${err.message || 'Payment processing failed.'}</div>`;
+                submitBtn.innerText = "Pay ${{ number_format($payment->amount, 2, '.', ',') }}";
+                submitBtn.disabled = false;
+                showError(err.message || 'Payment processing failed. Please check your card details.');
             }
         });
 
@@ -204,11 +301,19 @@
 
             document.getElementById('card-form').addEventListener('submit', function (e) {
                 e.preventDefault();
-                cardFields.submit();
+                errorBox.style.display = 'none';
+                submitBtn.innerText = 'Submitting...';
+                submitBtn.disabled = true;
+
+                cardFields.submit().catch(function (err) {
+                    submitBtn.innerText = "Pay ${{ number_format($payment->amount, 2, '.', ',') }}";
+                    submitBtn.disabled = false;
+                    showError('Failed to submit payment details. Please try again.');
+                });
             });
         } else {
-            document.getElementById('card-errors').innerHTML = 
-                '<div class="alert alert-danger">Credit Card Fields are not supported on this browser or region.</div>';
+            showError('Credit Card Fields are not supported on this browser or region.');
+            submitBtn.disabled = true;
         }
     });
 </script>

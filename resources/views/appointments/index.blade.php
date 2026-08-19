@@ -267,6 +267,20 @@
         color: #4338ca;
     }
 
+    .alert {
+        padding: 13px 16px;
+        margin-bottom: 20px;
+
+        border-radius: 8px;
+
+        background: #e9f8f5;
+        border: 1px solid #c8eee7;
+
+        color: #247d70;
+
+        font-size: 13px;
+    }
+
 
     /* ================= DATE ================= */
 
@@ -945,13 +959,9 @@
                         >
                             View
                         </a>
-
                     @endif
-
                 </div>
-
             </div>
-
         @empty
 
 
@@ -987,12 +997,8 @@
 
             </div>
 
-
         @endforelse
-
-
     </div>
-
 
     <!-- ================= PAGINATION ================= -->
     @if(method_exists($appointments, 'links'))

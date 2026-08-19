@@ -514,7 +514,7 @@
                             0,
                             1
                         )
-                    ) }}
+                    ) }}    
 
                 </div>
 
@@ -661,7 +661,7 @@
                         <div class="invoice-display-wrapper">
 
                             <div class="invoice-display-value">
-                                {{ number_format(
+                                $ {{ number_format(
                                     $examination->examination_fee ?? 0,
                                     2,
                                     ',',
@@ -669,9 +669,6 @@
                                 ) }}
                             </div>
 
-                            <span class="invoice-input-unit">
-                                VND
-                            </span>
 
                         </div>
 
@@ -698,17 +695,13 @@
                             @endphp
 
                             <div class="invoice-display-value">
-                                {{ number_format(
+                                $ {{ number_format(
                                     $medicineTotal ??
                                     0,2,
                                     ',',
                                     '.'
                                 ) }}
                             </div>
-
-                            <span class="invoice-input-unit">
-                                VND
-                            </span>
 
                         </div>
 
@@ -731,17 +724,13 @@
                         <div class="invoice-display-wrapper subtotal">
 
                             <div class="invoice-display-value">
-                                {{ number_format(
+                                $ {{ number_format(
                                     $subtotal ??
                                     0,2,
                                     ',',
                                     '.'
                                 ) }}
                             </div>
-
-                            <span class="invoice-input-unit">
-                                VND
-                            </span>
 
                         </div>
 
@@ -773,10 +762,7 @@
                                 required
                             >
 
-                            <span class="invoice-input-unit">
-                                VND
-                            </span>
-
+                            
                         </div>
 
                         @error('discount')
@@ -809,13 +795,9 @@
                         class="invoice-total"
                         id="invoice-total"
                     >
-                        0 VND
+                        0 $
                     </div>
 
-                </div>
-
-                <div class="invoice-summary-icon">
-                    ₫
                 </div>
 
             </div>
@@ -869,9 +851,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const total =
             Math.max(0, subtotal - discount);
 
-        totalElement.textContent =
+        totalElement.textContent ='$ '  + 
             new Intl.NumberFormat('vi-VN')
-                .format(total) + ' VND';
+                .format(total)  ;
     }
 
     discountInput.addEventListener(

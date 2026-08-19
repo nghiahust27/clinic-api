@@ -24,6 +24,19 @@
        PAGE HEADER
     ========================================================= */
 
+    .alert {
+        padding: 13px 16px;
+        margin-bottom: 20px;
+
+        border-radius: 8px;
+
+        background: #e9f8f5;
+        border: 1px solid #c8eee7;
+
+        color: #247d70;
+
+        font-size: 13px;
+    }
     .page-header {
         display: flex;
         align-items: center;
@@ -890,8 +903,18 @@
                     Edit
                 </a>
             @endif
+
         </div>
     </div>
+     @if(session('success'))
+
+        <div class="alert">
+
+            {{ session('success') }}
+
+        </div>
+
+    @endif
 
     {{-- STATUS --}}
 

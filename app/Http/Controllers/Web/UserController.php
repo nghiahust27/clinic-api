@@ -89,10 +89,10 @@ class UserController extends Controller
             ->with('success', 'User deactivated successfully.');
      
     }
-    public function activate(User $user)
+    public function updateStatus(User $user)
     {
 
-        $this->userService->activate($user);
+        $this->userService->updateStatus($user);
 
         return redirect()
             ->route('users.index')
@@ -100,18 +100,4 @@ class UserController extends Controller
      
     }
     
-
-    public function updateStatus(
-        UpdateUserStatusRequest $request,
-        User $user
-    ) {
-        $this->userService->updateStatus(
-            $user,
-            $request->boolean('is_active')
-        );
-
-        return redirect()
-            ->route('users.index')
-            ->with('success', 'User status updated successfully.');
-    }
 }

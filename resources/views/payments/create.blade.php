@@ -386,7 +386,7 @@
                             type="number" 
                             id="amount" 
                             name="amount" 
-                            step="0.01" 
+                            step="1" 
                             max="{{ $invoice->remaining_amount }}" 
                             value="{{ old('amount', $invoice->remaining_amount) }}" 
                             required 

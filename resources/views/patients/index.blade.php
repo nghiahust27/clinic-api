@@ -506,6 +506,9 @@
 <div class="page-header">
 
     <div>
+        <h1>
+            Patients
+        </h1>
 
         <div class="page-description">
             Manage patient information and medical records.
