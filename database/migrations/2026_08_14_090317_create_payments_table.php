@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('invoice_id')->constrained('invoices')
-            ->cascadeOnDelete();
+            ->restrictOnDelete();
             $table->decimal('amount', 12,2);
             $table->enum('method', ['paypal','visa']);
             $table->enum('status', ['pending', 'completed','failed'

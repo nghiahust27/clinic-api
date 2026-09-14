@@ -10,7 +10,7 @@ use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\PrescriptionController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\SpecialtyController;
-
+use App\Http\Controllers\Api\StatsController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -92,6 +92,11 @@ Route::middleware('auth:sanctum')->group(function () {
                 'payments/{payment}/capture',
                 [PaymentController::class, 'capture']  
             );
+
+
+            // STATS
+            Route::get('/stats', [StatsController::class, 'show']);
+            
     
         });
         

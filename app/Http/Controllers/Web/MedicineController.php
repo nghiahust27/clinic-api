@@ -45,7 +45,7 @@ class MedicineController extends Controller
         $this->medicineService->update($medicine,
         $request->validated());
         
-        return redirect()
+        return redirect()   
             ->route('medicines.index')
             ->with('success', 'Medicine updated successfully.');
     }

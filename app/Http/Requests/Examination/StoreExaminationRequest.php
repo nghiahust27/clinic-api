@@ -23,6 +23,11 @@ class StoreExaminationRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'appointment_id' => [
+            'required',
+            'integer',
+            'exists:appointments,id',
+        ],
 
             'diagnosis' => ['required', 'string'],
             'examination_fee' => ['required', 'decimal:0,2'],
