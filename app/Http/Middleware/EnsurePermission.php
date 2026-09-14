@@ -67,7 +67,7 @@ class EnsurePermission
             'removeItem' => 'REMOVEITEM',
             'capture' => 'CAPTURE',
             'adjustStock' => 'ADJUSTSTOCK',
-            'adjustStockForm' => 'ADJUSTSTOCK',
+            'adjustStockForm'    => 'ADJUSTSTOCK',
         ];
 
         if ($controllerName === 'StatsController' && $method === 'index') {
@@ -79,7 +79,8 @@ class EnsurePermission
         $permissionName = $resource . '.' . $action;
 
         if (!$user->role) {
-            return response()->json(['message' => 'User does not have a role.'], 403);
+            return response()->json(['message' 
+            => 'User does not have a role.'], 403);
         }
 
         $hasPermission = $user->role

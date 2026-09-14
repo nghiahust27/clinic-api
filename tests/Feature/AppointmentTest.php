@@ -42,12 +42,15 @@ class AppointmentTest extends TestCase
         $doctor = Doctor::factory()->create();
 
         $response = $this
-            ->actingAs($user,'sanctum')
-            ->postJson('/api/appointments',[
-                'patient_id'=>$patient->id,
-                'doctor_id'=>$doctor->id,
-                'scheduled_at'=>'2026-08-10 09:30:00',
-                'reason'=>'Đau đầu'
+            ->actingAs($user, 'sanctum')
+            ->postJson('/api/appointments', [
+                'patient_id' => $patient->id,
+                'doctor_id' => $doctor->id,
+                'scheduled_at' => now()
+                    ->addDay()
+                    ->setTime(9, 30)
+                    ->format('Y-m-d H:i:s'),
+                'reason' => 'Đau đầu',
             ]);
 
         $response->assertStatus(200);

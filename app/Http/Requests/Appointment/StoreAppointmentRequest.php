@@ -23,6 +23,7 @@ class StoreAppointmentRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'patient_id' => ['required','integer', 'exists:patients,id',],
             'doctor_id' => ['required', 'integer','exists:doctors,id'],
             'scheduled_at' => ['required', 'date', 'after:now'],
             'reason' => ['nullable', 'string']

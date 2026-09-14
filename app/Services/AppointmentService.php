@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Events\AppointmentStatusUpdated;
 use App\Models\Appointment;
 use App\Models\Doctor;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -47,19 +48,26 @@ class AppointmentService
     public function checkScheduleConflict(int $doctorId, 
     string $scheduledAt, ?int $ignoreAppointmentId = null): void
     {
-        $exists = Appointment::where('doctor_id', $doctorId)
-        ->where('scheduled_at', $scheduledAt)
-        ->where('status', '!=', 'cancelled')
-        ->when($ignoreAppointmentId, function($query) use(
-            $ignoreAppointmentId
-        ){
-            $query->where('id', '!=', $ignoreAppointmentId);
-        })->exists();
+        $newStart = Carbon::parse($scheduledAt);
+        $newEnd = $newStart->copy()->addMinutes(30);
 
-        if($exists)
+        $query = Appointment::query()
+            ->where('doctor_id', $doctorId)
+            ->whereIn('status', ['scheduled', 'confirmed'])
+            ->where(function($query) use ($newStart, $newEnd){
+                $query->where('scheduled_at', '<', $newEnd)
+                ->whereRaw("scheduled_at + INTERVAL '30 minutes'> ?",
+                [$newStart]);
+            });
+        
+        if($ignoreAppointmentId)
+        {
+            $query->where('id', '!=', $ignoreAppointmentId);
+        }
+        if($query->exists())
         {
             throw ValidationException::withMessages([
-                'scheduled_at'=>['Doctor already has an appointment at this time']
+                'scheduled_at'=> ['The doctor already has an appointment during this time']
             ]);
         }
     }

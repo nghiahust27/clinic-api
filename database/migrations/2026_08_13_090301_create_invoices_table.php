@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->foreignId('examination_id')
-            ->constrained('examinations')->cascadeOnDelete()->unique();
+            ->constrained('examinations')->restrictOnDelete()->unique();
             $table->string('invoice_code')->unique();
             $table->decimal('subtotal',12,2);
             $table->decimal('discount',12,2)->default('0');

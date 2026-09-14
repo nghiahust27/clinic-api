@@ -394,10 +394,6 @@
 
     /* ================= PAGINATION ================= */
 
-    /* =========================================
-   PAGINATION
-========================================= */
-
 .pagination-wrapper {
     display: flex;
     justify-content: center;

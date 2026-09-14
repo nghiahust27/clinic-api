@@ -704,8 +704,7 @@
                                         <option
                                             value="{{ $medicine->id }}"
                                         >
-                                            {{ $medicine->name }}
-                                            ({{ $medicine->unit }})
+                                            {{ $medicine->name }} ({{ $medicine->unit }}) — Stock: {{ $medicine->stock }}
                                         </option>
 
                                     @endforeach
